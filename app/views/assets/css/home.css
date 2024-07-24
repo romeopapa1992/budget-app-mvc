@@ -1,0 +1,71 @@
+body {
+    background-image: url("../../../../public/resources/image-budget.png"); 
+    background-size: 120% 100%;
+}
+
+
+.inner, main {
+    background: linear-gradient(300deg, #055508, #f1f9f2, #72ef87);
+    background-size: 180% 180%;
+    animation: gradient-animation 18s ease infinite;
+    border-radius: 0.75rem;
+  }
+  
+  @keyframes gradient-animation {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+ .custom-btn {
+    background-color: black;
+    color: white; 
+    margin-right: 10px;
+  }
+
+
+  .form-control:focus,
+  .form-select:focus {
+    border-color: rgb(146, 136, 136); 
+    box-shadow: 0 0 0 0.25rem rgba(135, 136, 133, 0.25); 
+  }
+
+.buttons button {
+  width: 40%;
+}
+
+.error-text {
+  display: none;
+	color: hsl(0, 100%, 74%);
+	text-align: right;
+	margin-top: 10px;
+	font-size: .8rem;
+	font-style: italic;
+	font-weight: 500;
+}
+
+input.error {
+	border: 2px solid hsl(0, 100%, 74%); 
+}
+
+.error-icon {
+	position: absolute;
+	top: 0;
+	right: 20px;
+	top: 28%;
+}
+
+input.error ~ img.error-icon,
+input.error ~ p.error-text {
+	display: block;
+  }
+
+.error-text, img {
+    display: none;
+}

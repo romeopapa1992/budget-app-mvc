@@ -1,0 +1,16 @@
+{
+    "name": "rafpro/budget-app-mvc",
+    "description": "A simple budget application using the MVC pattern.",
+    "type": "project",
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "scripts": {
+        "start": "php -S localhost:8000 -t public"
+    }
+}

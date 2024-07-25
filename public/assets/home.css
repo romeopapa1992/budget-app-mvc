@@ -1,8 +1,7 @@
 body {
-    background-image: url("../../../../public/resources/image-budget.png"); 
+    background-image: url("../resources/image-budget.png"); 
     background-size: 120% 100%;
 }
-
 
 .inner, main {
     background: linear-gradient(300deg, #055508, #f1f9f2, #72ef87);

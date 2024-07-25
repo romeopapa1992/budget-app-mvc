@@ -2,7 +2,7 @@
 
 class HomeController {
     public function index() {
-        require_once '../app/views/home/index.php';
+        require_once '../app/views/home/startPage.php';
     }
 
     public function signup() {

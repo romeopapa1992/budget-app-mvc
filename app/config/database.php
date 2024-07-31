@@ -1,13 +1,13 @@
 <?php
-$dsn = 'mysql:host=localhost;dbname=budget_manager';
-$username = 'root';
-$password = '';
-$options = [];
+$setup = require_once 'setup.php';
 
 try {
-    $db = new PDO($dsn, $username, $password, $options);
-} catch (PDOException $e) {
-    echo 'Connection failed: ' . $e->getMessage();
-    exit();
+    $db = new PDO("mysql:host={$setup['host']};dbname={$setup['database']};charset=utf8",
+        $setup['user'], $setup['password'], [
+        PDO::ATTR_EMULATE_PREPARES => false,
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+    ]);
+} catch (PDOException $error) {
+    echo $error->getMessage();
+    exit('Database error');
 }
-?>

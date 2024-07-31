@@ -2,14 +2,14 @@
 
 class HomeController {
     public function index() {
-        require_once '../app/views/home/startPage.php';
+        require_once '../App/views/pages/startPage.html';
     }
 
     public function signup() {
-        require_once '../app/views/home/signup.php';
+        require_once '../App/views/pages/signup.html';
     }
 
     public function signin() {
-        require_once '../app/views/home/signin.php';
+        require_once '../App/views/pages/signin.html';
     }
 }

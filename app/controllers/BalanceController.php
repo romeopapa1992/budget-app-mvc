@@ -1,5 +1,5 @@
 <?php
-require_once '../app/models/Balance.php';
+require_once '../App/models/Balance.php';
 
 class BalanceController
 {

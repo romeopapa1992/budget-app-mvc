@@ -1,5 +1,5 @@
 body {
-    background-image: url("/public/resources/image-budget.png/"); 
+    background-image: url("../resources/image-budget.png"); 
     background-size: 120% 100%;
 }
 

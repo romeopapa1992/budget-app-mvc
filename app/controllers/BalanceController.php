@@ -1,4 +1,5 @@
 <?php
+
 require_once '../App/models/Balance.php';
 
 class BalanceController

@@ -1,32 +1,28 @@
 <?php
 
-require_once '../Config/database.php';
-
 class User {
-    public $id;
-    public $first_name;
-    public $last_name;
-    public $email;
-    public $password;
+    private $db;
 
-    public static function findByEmail($email) {
-        global $db;
-        $sql = 'SELECT * FROM users WHERE email = :email';
-        $query = $db->prepare($sql);
-        $query->bindValue(':email', $email);
-        $query->execute();
-        return $query->fetch(PDO::FETCH_ASSOC);
+    public function __construct($db) {
+        $this->db = $db;
     }
 
-    public function save() {
-        global $db;
+    public function userExists($email) {
+        $sql_check = 'SELECT COUNT(*) FROM users WHERE email = :email';
+        $query_check = $this->db->prepare($sql_check);
+        $query_check->bindValue(':email', $email);
+        $query_check->execute();
+        return $query_check->fetchColumn() > 0;
+    }
+
+    public function registerUser($first_name, $last_name, $email, $hashed_password) {
         $sql = 'INSERT INTO users (first_name, last_name, email, password) VALUES (:first_name, :last_name, :email, :password)';
-        $query = $db->prepare($sql);
-        $query->bindValue(':first_name', $this->first_name);
-        $query->bindValue(':last_name', $this->last_name);
-        $query->bindValue(':email', $this->email);
-        $query->bindValue(':password', $this->password);
+        $query = $this->db->prepare($sql);
+        $query->bindValue(':first_name', $first_name);
+        $query->bindValue(':last_name', $last_name);
+        $query->bindValue(':email', $email);
+        $query->bindValue(':password', $hashed_password);
         return $query->execute();
     }
 }
-?>
+

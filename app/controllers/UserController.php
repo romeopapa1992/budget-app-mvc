@@ -1,42 +1,53 @@
 <?php
 
-require_once '../App/Models/User.php';
-require_once '../App/Config/database.php'; 
+namespace App\Controllers;
 
-class UserController {
+use App\Models\User;
+use PDO;
+
+class UserController
+{
+    private $db;
     private $userModel;
 
-    public function __construct() {
+    public function __construct(PDO $db)
+    {
+        $this->db = $db;
         $this->userModel = new User($db);
     }
 
-    public function showRegistrationForm() {
-        require_once '../App/views/pages/registration.html';
-    }
-
-    public function register() {
+    public function registration()
+    {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $first_name = $_POST['first_name'];
             $last_name = $_POST['last_name'];
             $email = $_POST['email'];
             $password = $_POST['password'];
 
+            // Hashowanie hasła
             $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-            if ($this->userModel->userExists($email)) {
+            // Sprawdzenie, czy email już istnieje
+            if ($this->userModel->checkEmailExists($email)) {
                 echo json_encode(['status' => 'error', 'message' => 'Email already exists']);
                 exit();
             }
 
-            if ($this->userModel->registerUser($first_name, $last_name, $email, $hashed_password)) {
-                echo json_encode(['status' => 'success']);
+            // Tworzenie nowego użytkownika
+            if ($this->userModel->createUser($first_name, $last_name, $email, $hashed_password)) {
+                header('Location: /budget-app-mvc/public/index.php?action=signin');
+                exit();
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'Registration failed']);
             }
         } else {
-            header('Location: index.php');
+            header('Location: /budget-app-mvc/public/index.php?action=registration');
             exit();
         }
     }
-}
 
+    public function showRegistrationForm()
+    {
+        require_once '../App/views/pages/registration.html';
+    }
+}

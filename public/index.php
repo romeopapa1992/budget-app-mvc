@@ -1,24 +1,34 @@
-<?php
+ <?php
 
-require_once '../App/Controllers/HomeController.php';
+require_once '../vendor/autoload.php';
 
-$controller = new HomeController();
+require_once '../App/Config/database.php';
+
+use App\Controllers\HomeController;
+use App\Controllers\UserController;
+
+$homeController = new HomeController();
+$userController = new UserController($db);
 
 if (isset($_GET['action'])) {
     switch ($_GET['action']) {
         case 'registration':
-            $controller->registration();
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $userController->registration();
+            } else {
+                $userController->showRegistrationForm();
+            }
             break;
         case 'signin':
-            $controller->signin();
+            $homeController->signin();
             break;
         case 'balance':
-            $controller->balance();
+            $homeController->balance();
             break;
         default:
-            $controller->index();
+            $homeController->index();
             break;
     }
 } else {
-    $controller->index();
+    $homeController->index();
 }

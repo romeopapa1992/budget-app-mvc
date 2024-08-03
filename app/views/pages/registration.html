@@ -14,7 +14,7 @@
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
     <nav class="navbar navbar-expand-lg navbar-light bg-none">
         <div class="container-fluid">
-          <a class="btn btn-lg btn-secondary custom-btn" href="./index.html">Home</a>
+          <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php">Home</a>
           <button id="navbar-toggler" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav"
             aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -24,23 +24,31 @@
         </div>
       </nav>
 <main class="form-signin m-auto">
-  <form class="p-3 mx-2" action="index.php?action=register" method="post">
+  <form class="p-3 mx-2" action="index.php?action=registration" method="post">
     <h1 class="h3 mb-3 fw-bold">Please sign up</h1>
     <div class="form-floating my-2">
         <input type="text" class="form-control" id="floatingName" name="first_name" placeholder="First Name">
         <label for="floatingName">First Name</label>
+        <p class="error-text">First name cannot be empty.</p>
+        <img src="/public/resources/icon-error.svg" class="error-icon" alt="icon error">
     </div>
     <div class="form-floating my-2">
         <input type="text" class="form-control" id="floatingSurname" name="last_name" placeholder="Last Name">
         <label for="floatingSurname">Last Name</label>
+        <p class="error-text">Last name cannot be empty.</p>
+        <img src="./resources/icon-error.svg" class="error-icon" alt="icon error">
     </div>
     <div class="form-floating my-2">
         <input type="email" class="form-control" id="floatingEmail" name="email" placeholder="name@example.com">
         <label for="floatingEmail">Email address</label>
+        <p class="error-text">Looks like this is not an email.</p>
+        <img src="./resources/icon-error.svg" class="error-icon" alt="icon error">
     </div>
     <div class="form-floating my-2">
         <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Password">
         <label for="floatingPassword">Password</label>
+        <p class="error-text">Passwords must meet complexity requirements.</p>
+        <img src="./resources/icon-error.svg" class="error-icon" alt="icon error">
     </div>
 
     <button class="btn btn-secondary btn-lg custom-btn w-100" type="submit">Sign up</button>
@@ -53,4 +61,4 @@
 
 </body>
 
-</html>
+</html> 

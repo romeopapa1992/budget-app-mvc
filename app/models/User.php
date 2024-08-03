@@ -1,21 +1,29 @@
 <?php
 
-class User {
+namespace App\Models;
+
+use PDO;
+
+class User
+{
     private $db;
 
-    public function __construct($db) {
+    public function __construct(PDO $db)
+    {
         $this->db = $db;
     }
 
-    public function userExists($email) {
-        $sql_check = 'SELECT COUNT(*) FROM users WHERE email = :email';
-        $query_check = $this->db->prepare($sql_check);
-        $query_check->bindValue(':email', $email);
-        $query_check->execute();
-        return $query_check->fetchColumn() > 0;
+    public function checkEmailExists($email)
+    {
+        $sql = 'SELECT COUNT(*) FROM users WHERE email = :email';
+        $query = $this->db->prepare($sql);
+        $query->bindValue(':email', $email);
+        $query->execute();
+        return $query->fetchColumn() > 0;
     }
 
-    public function registerUser($first_name, $last_name, $email, $hashed_password) {
+    public function createUser($first_name, $last_name, $email, $hashed_password)
+    {
         $sql = 'INSERT INTO users (first_name, last_name, email, password) VALUES (:first_name, :last_name, :email, :password)';
         $query = $this->db->prepare($sql);
         $query->bindValue(':first_name', $first_name);
@@ -25,4 +33,3 @@ class User {
         return $query->execute();
     }
 }
-

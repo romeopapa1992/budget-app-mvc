@@ -22,12 +22,12 @@ class User
         return $query->fetchColumn() > 0;
     }
 
-    public function createUser($first_name, $last_name, $email, $hashed_password)
+    public function createUser($name, $surname, $email, $hashed_password)
     {
-        $sql = 'INSERT INTO users (first_name, last_name, email, password) VALUES (:first_name, :last_name, :email, :password)';
+        $sql = 'INSERT INTO users (name, surname, email, password) VALUES (:name, :surname, :email, :password)';
         $query = $this->db->prepare($sql);
-        $query->bindValue(':first_name', $first_name);
-        $query->bindValue(':last_name', $last_name);
+        $query->bindValue(':name', $name);
+        $query->bindValue(':surname', $surname);
         $query->bindValue(':email', $email);
         $query->bindValue(':password', $hashed_password);
         return $query->execute();

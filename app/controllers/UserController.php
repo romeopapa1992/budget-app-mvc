@@ -66,8 +66,44 @@ class UserController
         }
     }
 
+    public function signin() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+
+            $user = $this->userModel->getUserByEmail($email);
+
+            if ($user && password_verify($password, $user['password'])) {
+                session_start();
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['first_name'] = $user['first_name'];
+
+                echo json_encode(['status' => 'success']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Wrong email or password!']);
+            }
+        } else {
+            // Wyświetlenie widoku logowania, jeśli nie jest to żądanie POST
+            require_once 'app/views/signin.php';
+        }
+    }
+
+    public function logout()
+    {
+        session_start();
+        session_unset();
+        session_destroy();
+        header('Location: /budget-app-mvc/public/index.php?action=signin');
+        exit();
+    }
+
     public function showRegistrationForm()
     {
         require_once '../App/views/pages/registration.html';
+    }
+
+    public function showSigninForm()
+    {
+        require_once '../App/views/pages/signin.html';
     }
 }

@@ -32,4 +32,13 @@ class User
         $query->bindValue(':password', $hashed_password);
         return $query->execute();
     }
+
+    public function getUserByEmail($email) {
+        $sql = 'SELECT * FROM users WHERE email = :email';
+        $query = $this->db->prepare($sql);
+        $query->bindValue(':email', $email);
+        $query->execute();
+
+        return $query->fetch(PDO::FETCH_ASSOC);
+    }
 }

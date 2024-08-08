@@ -14,23 +14,23 @@
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
       <nav class="navbar navbar-expand-lg navbar-light bg-none mb-auto">
         <div class="container-fluid">
-          <a class="btn btn-lg btn-secondary custom-btn" href="./index.html">Home</a>
+          <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php">Home</a>
           <button id="navbar-toggler" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav"
             aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarNav">
             <div class="navbar-nav ms-auto">
-              <a class="btn btn-lg btn-secondary custom-btn" href="expenses.html">Expenses</a>
-              <a class="btn btn-lg btn-secondary custom-btn" href="balance.html">Balance</a>
-              <a class="btn btn-lg btn-secondary custom-btn" href="logout.php">Log out</a>
+              <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/App/views/pages/expenses.html">Expenses</a>
+              <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/App/views/pages/balance.html">Balance</a>
+              <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php?action=logout">Log out</a>
             </div>
           </div>
         </div>
       </nav>
       
       <main class="form-signin m-auto">
-        <form class="p-3 mx-2" action="incomes.php" method="post" id="income-form">
+        <form class="p-3 mx-2" action="/budget-app-mvc/public/index.php?action=income" method="post" id="income-form">
           <h1 class="h3 mb-3 fw-bold">Enter incomes data</h1>
       
           <div class="form-floating my-2">

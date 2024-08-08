@@ -1,27 +1,68 @@
 <?php
 
-require_once '../Config/database.php';
+namespace App\Models;
 
-class Expense {
-    public $id;
-    public $amount;
-    public $date;
-    public $category;
-    public $payment_method;
-    public $comment;
-    public $user_id;
+use PDO;
 
-    public function save() {
-        global $db;
-        $sql = 'INSERT INTO expenses (amount, date, category, payment_method, comment, user_id) VALUES (:amount, :date, :category, :payment_method, :comment, :user_id)';
-        $query = $db->prepare($sql);
-        $query->bindValue(':amount', $this->amount);
-        $query->bindValue(':date', $this->date);
-        $query->bindValue(':category', $this->category);
-        $query->bindValue(':payment_method', $this->payment_method);
-        $query->bindValue(':comment', $this->comment);
-        $query->bindValue(':user_id', $this->user_id);
+class Expense
+{
+    private $db;
+
+    public function __construct($db)
+    {
+        $this->db = $db;
+    }
+
+    public function addExpense($userId, $amount, $dateOfExpense, $category, $paymentMethod, $comment)
+    {
+        // Pobierz kategorię przypisaną do użytkownika lub dodaj nową
+        $sql = 'SELECT id FROM expenses_category_assigned_to_users WHERE user_id = :user_id AND name = :category';
+        $query = $this->db->prepare($sql);
+        $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $query->bindValue(':category', $category, PDO::PARAM_STR);
+        $query->execute();
+        $assignedCategoryData = $query->fetch(PDO::FETCH_ASSOC);
+
+        if (!$assignedCategoryData) {
+            $sql = 'INSERT INTO expenses_category_assigned_to_users (user_id, name) VALUES (:user_id, :category)';
+            $query = $this->db->prepare($sql);
+            $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
+            $query->bindValue(':category', $category, PDO::PARAM_STR);
+            $query->execute();
+            $expenseCategoryAssignedToUserId = $this->db->lastInsertId();
+        } else {
+            $expenseCategoryAssignedToUserId = $assignedCategoryData['id'];
+        }
+
+        // Pobierz metodę płatności przypisaną do użytkownika lub dodaj nową
+        $sql = 'SELECT id FROM payment_methods_assigned_to_users WHERE user_id = :user_id AND name = :payment_method';
+        $query = $this->db->prepare($sql);
+        $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $query->bindValue(':payment_method', $paymentMethod, PDO::PARAM_STR);
+        $query->execute();
+        $assignedPaymentMethodData = $query->fetch(PDO::FETCH_ASSOC);
+
+        if (!$assignedPaymentMethodData) {
+            $sql = 'INSERT INTO payment_methods_assigned_to_users (user_id, name) VALUES (:user_id, :payment_method)';
+            $query = $this->db->prepare($sql);
+            $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
+            $query->bindValue(':payment_method', $paymentMethod, PDO::PARAM_STR);
+            $query->execute();
+            $paymentMethodAssignedToUserId = $this->db->lastInsertId();
+        } else {
+            $paymentMethodAssignedToUserId = $assignedPaymentMethodData['id'];
+        }
+
+        // Wstaw dane do tabeli expenses
+        $sql = 'INSERT INTO expenses (user_id, expense_category_assigned_to_user_id, payment_method_assigned_to_user_id, amount, date_of_expense, expense_comment) 
+                VALUES (:user_id, :expense_category_assigned_to_user_id, :payment_method_assigned_to_user_id, :amount, :date_of_expense, :expense_comment)';
+        $query = $this->db->prepare($sql);
+        $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $query->bindValue(':expense_category_assigned_to_user_id', $expenseCategoryAssignedToUserId, PDO::PARAM_INT);
+        $query->bindValue(':payment_method_assigned_to_user_id', $paymentMethodAssignedToUserId, PDO::PARAM_INT);
+        $query->bindValue(':amount', $amount, PDO::PARAM_STR);
+        $query->bindValue(':date_of_expense', $dateOfExpense, PDO::PARAM_STR);
+        $query->bindValue(':expense_comment', $comment, PDO::PARAM_STR);
         return $query->execute();
     }
 }
-?>

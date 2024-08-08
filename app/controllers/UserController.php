@@ -66,36 +66,39 @@ class UserController
         }
     }
 
-    public function signin() {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $email = $_POST['email'];
-            $password = $_POST['password'];
+   public function signin() {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $email = $_POST['email'];
+        $password = $_POST['password'];
 
-            $user = $this->userModel->getUserByEmail($email);
+        $user = $this->userModel->getUserByEmail($email);
 
-            if ($user && password_verify($password, $user['password'])) {
+        if ($user && password_verify($password, $user['password'])) {
+            if (session_status() == PHP_SESSION_NONE) {
                 session_start();
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['first_name'] = $user['first_name'];
-
-                echo json_encode(['status' => 'success']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Wrong email or password!']);
             }
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['email'] = $user['email'];
+
+            echo json_encode(['status' => 'success']);
+            return;
         } else {
-            // Wyświetlenie widoku logowania, jeśli nie jest to żądanie POST
-            require_once 'app/views/signin.php';
+            echo json_encode(['status' => 'error', 'message' => 'Wrong email or password!']);
+            return;
         }
     }
+}
 
-    public function logout()
-    {
+public function logout()
+{
+    if (session_status() == PHP_SESSION_NONE) {
         session_start();
-        session_unset();
-        session_destroy();
-        header('Location: /budget-app-mvc/public/index.php?action=signin');
-        exit();
     }
+    session_unset();
+    session_destroy();
+    header('Location: /budget-app-mvc/public/index.php?action=signin');
+    exit();
+}
 
     public function showRegistrationForm()
     {

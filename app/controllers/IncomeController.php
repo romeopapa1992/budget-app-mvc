@@ -1,21 +1,38 @@
 <?php
 
-require_once '../app/models/Income.php';
+namespace App\Controllers;
 
-class IncomeController {
-    public function add() {
-        $income = new Income();
-        $income->amount = $_POST['amount'];
-        $income->date = $_POST['date'];
-        $income->category = $_POST['category'];
-        $income->comment = $_POST['comment'];
-        $income->user_id = $_SESSION['user_id'];
+use App\Models\Income;
+use Core\View;
 
-        if ($income->save()) {
-            echo json_encode(['status' => 'success']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Failed to add income']);
+class IncomeController
+{
+    private $incomeModel;
+
+    public function __construct($db)
+    {
+        $this->incomeModel = new Income($db);
+    }
+
+    public function income()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $userId = $_SESSION['user_id'];
+            $amount = trim($_POST['amount']);
+            $dateOfIncome = trim($_POST['date']);
+            $category = trim($_POST['category']);
+            $comment = ucfirst(strtolower(trim($_POST['comment'])));
+
+            if ($this->incomeModel->addIncome($userId, $amount, $dateOfIncome, $category, $comment)) {
+                echo json_encode(['status' => 'success', 'message' => 'Income has been added successfully!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'An error occurred while adding the income.']);
+            }
         }
     }
+
+    public function showIncomesForm()
+    {
+        require_once '../App/views/pages/incomes.html';
+    }
 }
-?>

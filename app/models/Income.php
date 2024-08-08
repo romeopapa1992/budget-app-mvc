@@ -1,25 +1,48 @@
 <?php
 
-require_once '../Config/database.php';
+namespace App\Models;
 
-class Income {
-    public $id;
-    public $amount;
-    public $date;
-    public $category;
-    public $comment;
-    public $user_id;
+use PDO;
 
-    public function save() {
-        global $db;
-        $sql = 'INSERT INTO incomes (amount, date, category, comment, user_id) VALUES (:amount, :date, :category, :comment, :user_id)';
-        $query = $db->prepare($sql);
-        $query->bindValue(':amount', $this->amount);
-        $query->bindValue(':date', $this->date);
-        $query->bindValue(':category', $this->category);
-        $query->bindValue(':comment', $this->comment);
-        $query->bindValue(':user_id', $this->user_id);
+class Income
+{
+    private $db;
+
+    public function __construct($db)
+    {
+        $this->db = $db;
+    }
+
+    public function addIncome($userId, $amount, $dateOfIncome, $category, $comment)
+    {
+        // Pobierz kategorię przypisaną do użytkownika lub dodaj nową
+        $sql = 'SELECT id FROM incomes_category_assigned_to_users WHERE user_id = :user_id AND name = :category';
+        $query = $this->db->prepare($sql);
+        $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $query->bindValue(':category', $category, PDO::PARAM_STR);
+        $query->execute();
+        $assignedCategoryData = $query->fetch(PDO::FETCH_ASSOC);
+
+        if (!$assignedCategoryData) {
+            $sql = 'INSERT INTO incomes_category_assigned_to_users (user_id, name) VALUES (:user_id, :category)';
+            $query = $this->db->prepare($sql);
+            $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
+            $query->bindValue(':category', $category, PDO::PARAM_STR);
+            $query->execute();
+            $incomeCategoryAssignedToUserId = $this->db->lastInsertId();
+        } else {
+            $incomeCategoryAssignedToUserId = $assignedCategoryData['id'];
+        }
+
+        // Wstaw dane do tabeli incomes
+        $sql = 'INSERT INTO incomes (user_id, income_category_assigned_to_user_id, amount, date_of_income, income_comment) 
+                VALUES (:user_id, :income_category_assigned_to_user_id, :amount, :date_of_income, :income_comment)';
+        $query = $this->db->prepare($sql);
+        $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $query->bindValue(':income_category_assigned_to_user_id', $incomeCategoryAssignedToUserId, PDO::PARAM_INT);
+        $query->bindValue(':amount', $amount, PDO::PARAM_STR);
+        $query->bindValue(':date_of_income', $dateOfIncome, PDO::PARAM_STR);
+        $query->bindValue(':income_comment', $comment, PDO::PARAM_STR);
         return $query->execute();
     }
 }
-?>

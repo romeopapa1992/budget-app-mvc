@@ -4,6 +4,7 @@ $(document).ready(function() {
     $("form").submit(function(event) {
         event.preventDefault();
         const form = $(this);
+        const action = form.attr('action');
 
         if (form.attr('action').includes('signin')) {
             validateAndSubmitForm(form, true);  // Walidacja i obsługa formularza logowania
@@ -91,30 +92,155 @@ $(document).ready(function() {
     
       function submitForm(form, isLoginForm) {
         $.ajax({
-          url: form.attr('action'),
-          type: 'POST',
-          data: form.serialize(),
-          dataType: 'json',
-          success: function(response) {
-            if (response.status === 'success') {
-              if (isLoginForm) {
-                window.location.href = '/budget-app-mvc/public/index.php?controller=User&action=balance';
-              } else {
-                alert('Registration successful! You can now log in.');
-                window.location.href = '/budget-app-mvc/public/index.php?controller=User&action=signin';
-              }
-            } else if (response.status === 'error') {
-              // Obsługa błędów logowania (przy odpowiedzi z kluczem 'message')
-              if (response.message) {
-                alert(response.message);
-              } else {
-                handleErrors(response.errors);
-              }
-            } else {
-              alert(response.message);
+            url: form.attr('action'),
+            type: 'POST',
+            data: form.serialize(),
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    if (isLoginForm) {
+                        // Teraz przekierowujemy użytkownika
+                        window.location.href = '/budget-app-mvc/public/index.php?action=balance';
+                    } else {
+                        alert('Registration successful! You can now log in.');
+                        window.location.href = '/budget-app-mvc/public/index.php?action=signin';
+                    }
+                } else if (response.status === 'error') {
+                    // Obsługa błędów logowania
+                    alert(response.message);
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function() {
+                alert('An error occurred. Please try again.');
             }
-          }
         });
-      }
+    }
     
+      function validateAndSubmitIncomeForm(form) {
+        const amount = $('#amount').val().trim();
+        const date = $('#date').val().trim();
+        const category = $('#category').val().trim();
+        const comment = $('#comment').val().trim();
+        let hasError = false;
+    
+        // Walidacja formularza...
+    
+        if (!hasError) {
+            $.ajax({
+                url: '/budget-app-mvc/public/index.php?controller=User&action=signin',
+                type: 'POST',
+                data: { amount, date, category, comment },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'error') {
+                        alert(response.message);
+                    } else {
+                        alert('Income has been added successfully.');
+                        form[0].reset();
+                    }
+                }
+            });
+        }
+    }
+
+    function validateAndSubmitExpenseForm(form) {
+        const amount = $('#amount').val().trim();
+        const date = $('#date').val().trim();
+        const category = $('#category').val().trim();
+        const paymentMethod = $('#payment_method').val().trim();
+        const comment = $('#comment').val().trim();
+        let hasError = false;
+
+        // Walidacja formularza
+        if (amount === "" || isNaN(amount)) {
+            showError($('#amount'), $('#amount-error'));
+            hasError = true;
+        }
+        if (date === "") {
+            showError($('#date'), $('#date-error'));
+            hasError = true;
+        }
+        if (category === "") {
+            showError($('#category'), $('#category-error'));
+            hasError = true;
+        }
+        if (paymentMethod === "") {
+            showError($('#payment_method'), $('#payment_method-error'));
+            hasError = true;
+        }
+
+        if (!hasError) {
+            $.ajax({
+                url: '/budget-app-mvc/public/index.php?action=expense',
+                type: 'POST',
+                data: form.serialize(),
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        alert('Expense has been added successfully.');
+                        form[0].reset();
+                    } else {
+                        alert(response.message);
+                    }
+                }
+            });
+        }
+    }
+
+    $(document).ready(function() {
+        $('#period').on('change', function() {
+            if ($(this).val() === 'custom') {
+                $('#custom-date-range').removeClass('d-none');
+            } else {
+                $('#custom-date-range').addClass('d-none');
+            }
+        });
+    
+        $('#balance-form').on('submit', function(e) {
+            e.preventDefault();
+    
+            const period = $('#period').val();
+            const startDate = $('#startDate').val();
+            const endDate = $('#endDate').val();
+    
+            if (period === 'custom') {
+                if (!startDate || !endDate) {
+                    if (!startDate) $('#startDateError').removeClass('d-none');
+                    if (!endDate) $('#endDateError').removeClass('d-none');
+                    return;
+                }
+            }
+    
+            $.ajax({
+                type: 'POST',
+                url: '/budget-app-mvc/public/index.php?controller=BalanceController&action=showBalance',
+                data: {
+                    period: period,
+                    startDate: startDate,
+                    endDate: endDate
+                },
+                success: function(response) {
+                    const balanceData = JSON.parse(response);
+                    if (balanceData.error) {
+                        alert('Error: ' + balanceData.error);
+                    } else {
+                        $('#balance').text('Balance: ' + balanceData.balance);
+                        $('#total-income').text('Total Income: ' + balanceData.income);
+                        $('#total-expense').text('Total Expense: ' + balanceData.expense);
+                        $('#balance-info').removeClass('d-none');
+                    }
+                }
+            });
+        });
+    
+        $('#clear-button').on('click', function() {
+            $('#balance-info').addClass('d-none');
+            $('#balance-form')[0].reset();
+            $('#custom-date-range').addClass('d-none');
+        });
+    });
+    
+     
 });

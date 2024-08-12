@@ -26,7 +26,6 @@ class UserController
 
             $errors = [];
 
-            // Walidacja pól
             if (empty($name)) {
                 $errors['name'] = 'First name cannot be empty.';
             }
@@ -35,7 +34,7 @@ class UserController
                 $errors['surname'] = 'Last name cannot be empty.';
             }
 
-            if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $errors['email'] = 'Looks like this is not an email.';
             } elseif ($this->userModel->checkEmailExists($email)) {
                 $errors['email'] = 'Email already exists.';
@@ -45,16 +44,13 @@ class UserController
                 $errors['password'] = 'Passwords must meet complexity requirements.';
             }
 
-            // Sprawdzenie czy są błędy
             if (!empty($errors)) {
                 echo json_encode(['status' => 'error', 'errors' => $errors]);
                 return;
             }
 
-            // Hashowanie hasła
             $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-            // Tworzenie nowego użytkownika
             if ($this->userModel->createUser($name, $surname, $email, $hashed_password)) {
                 echo json_encode(['status' => 'success']);
             } else {

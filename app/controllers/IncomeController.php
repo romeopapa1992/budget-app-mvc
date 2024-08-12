@@ -5,6 +5,12 @@ namespace App\Controllers;
 use App\Models\Income;
 use Core\View;
 
+
+namespace App\Controllers;
+
+use App\Models\Income;
+use Core\View;
+
 class IncomeController
 {
     private $incomeModel;

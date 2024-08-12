@@ -9,7 +9,7 @@ class ExpenseController
 {
     private $expenseModel;
 
-    public function __construct($db)
+public function __construct($db)
     {
         $this->expenseModel = new Expense($db);
     }
@@ -35,6 +35,6 @@ class ExpenseController
 
     public function showExpenseForm()
     {
-        require_once '../App/views/pages/expense.html';
+        require_once '../App/views/pages/expenses.html';
     }
 }

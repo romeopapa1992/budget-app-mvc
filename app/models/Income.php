@@ -15,7 +15,6 @@ class Income
 
     public function addIncome($userId, $amount, $dateOfIncome, $category, $comment)
     {
-        // Pobierz kategorię przypisaną do użytkownika lub dodaj nową
         $sql = 'SELECT id FROM incomes_category_assigned_to_users WHERE user_id = :user_id AND name = :category';
         $query = $this->db->prepare($sql);
         $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
@@ -34,7 +33,6 @@ class Income
             $incomeCategoryAssignedToUserId = $assignedCategoryData['id'];
         }
 
-        // Wstaw dane do tabeli incomes
         $sql = 'INSERT INTO incomes (user_id, income_category_assigned_to_user_id, amount, date_of_income, income_comment) 
                 VALUES (:user_id, :income_category_assigned_to_user_id, :amount, :date_of_income, :income_comment)';
         $query = $this->db->prepare($sql);

@@ -2,7 +2,6 @@
 
 namespace App\Models; 
 
-
 class Balance
 {
     private $db;
@@ -31,11 +30,11 @@ class Balance
                 break;
             case 'custom':
                 if (empty($startDate) || empty($endDate)) {
-                    throw new Exception('Invalid custom date range.');
+                    throw new \Exception('Invalid custom date range.');
                 }
                 break;
             default:
-                throw new Exception('Invalid period specified.');
+                throw new \Exception('Invalid period specified.');
         }
 
         $totalIncome = $this->getTotalIncome($startDate, $endDate);

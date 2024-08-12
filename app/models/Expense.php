@@ -15,7 +15,6 @@ class Expense
 
     public function addExpense($userId, $amount, $dateOfExpense, $category, $paymentMethod, $comment)
     {
-        // Pobierz kategorię przypisaną do użytkownika lub dodaj nową
         $sql = 'SELECT id FROM expenses_category_assigned_to_users WHERE user_id = :user_id AND name = :category';
         $query = $this->db->prepare($sql);
         $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
@@ -34,7 +33,6 @@ class Expense
             $expenseCategoryAssignedToUserId = $assignedCategoryData['id'];
         }
 
-        // Pobierz metodę płatności przypisaną do użytkownika lub dodaj nową
         $sql = 'SELECT id FROM payment_methods_assigned_to_users WHERE user_id = :user_id AND name = :payment_method';
         $query = $this->db->prepare($sql);
         $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
@@ -53,7 +51,6 @@ class Expense
             $paymentMethodAssignedToUserId = $assignedPaymentMethodData['id'];
         }
 
-        // Wstaw dane do tabeli expenses
         $sql = 'INSERT INTO expenses (user_id, expense_category_assigned_to_user_id, payment_method_assigned_to_user_id, amount, date_of_expense, expense_comment) 
                 VALUES (:user_id, :expense_category_assigned_to_user_id, :payment_method_assigned_to_user_id, :amount, :date_of_expense, :expense_comment)';
         $query = $this->db->prepare($sql);

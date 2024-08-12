@@ -13,7 +13,6 @@ class BalanceController
     {
         $this->db = $db;
 
-        // Sprawdzenie, czy użytkownik jest zalogowany przed inicjalizacją modelu
         session_start();
         if (isset($_SESSION['user_id'])) {
             $userId = $_SESSION['user_id'];
@@ -22,16 +21,23 @@ class BalanceController
     }
 
     public function showBalance() {
-        // Sprawdzenie, czy użytkownik jest zalogowany
-        if (!isset($_SESSION['user_id'])) {
-            // Przekierowanie do strony logowania, jeśli nie jest zalogowany
-            header('Location: /budget-app-mvc/public/index.php?action=signin');
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $period = $_POST['period'] ?? null;  
+        $startDate = $_POST['startDate'] ?? null;
+        $endDate = $_POST['endDate'] ?? null;
+
+        if ($period !== null) {  
+            $balanceData = $this->balanceModel->getBalance($period, $startDate, $endDate);
+            echo json_encode($balanceData);
+            exit();  
+        } else {
+            echo json_encode(['error' => 'Period not specified']);
             exit();
         }
-
-        // Pobranie danych bilansu użytkownika z modelu
-        $balanceData = $this->balanceModel->getBalanceData();
+    } else {
         require_once '../App/views/pages/balance.html';
-
     }
+}
+
+
 }

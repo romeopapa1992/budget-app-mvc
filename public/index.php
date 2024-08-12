@@ -9,15 +9,12 @@ use App\Controllers\IncomeController;
 use App\Controllers\ExpenseController;
 use App\Controllers\BalanceController; 
 
-// Inicjalizacja kontrolerów
 $homeController = new HomeController();
 $userController = new UserController($db);
 $incomeController = new IncomeController($db);
 $expenseController = new ExpenseController($db); 
 $balanceController = new BalanceController($db); 
 
-
-// Obsługa routingów
 if (isset($_GET['action'])) {
     switch ($_GET['action']) {
         case 'registration':
@@ -28,7 +25,7 @@ if (isset($_GET['action'])) {
             }
             break;
 
-        case 'signin':
+         case 'signin':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $userController->signin();
             } else {
@@ -52,22 +49,20 @@ if (isset($_GET['action'])) {
             }
             break;
 
-        case 'balance':
-    //  Sprawdzenie, czy użytkownik jest zalogowany
-        if (session_status() == PHP_SESSION_NONE) {
-        session_start();
-        }
+         case 'balance':
+            if (session_status() == PHP_SESSION_NONE) {
+             session_start();
+            }
             if (isset($_SESSION['user_id'])) {
-            // Wyświetlanie widoku bilansu
+
             $balanceController->showBalance();
-        } else {
-            // Jeśli użytkownik nie jest zalogowany, przekierowanie na stronę logowania
-            header('Location: /budget-app-mvc/public/index.php?action=signin');
-        }
+            } else {
+            echo json_encode(['status' => 'error', 'message' => 'You should log in, if you want to review your balance.']);
+         }
          break;
 
 
-        case 'logout':  // Obsługa wylogowania
+        case 'logout':  
             $userController->logout();
             break;
 

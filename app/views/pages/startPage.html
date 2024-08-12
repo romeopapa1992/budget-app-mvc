@@ -23,7 +23,7 @@
             <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php?action=registration">Registration</a>
             <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php?action=signin">Sign In</a>
             <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php?action=balance">Balance</a>
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal fade" id="loginRequiredModal" tabindex="-1" role="dialog" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                   <div class="modal-header">
@@ -49,21 +49,21 @@
         <p class="learn">
           <button type="button" class="btn btn-lg btn-secondary custom-btn" data-bs-toggle="modal" data-bs-target="#learnMoreModal">Learn more</button>
         </p>
-        <div class="modal fade" id="learnMoreModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal fade" id="loginRequiredModal" tabindex="-1" role="dialog" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h2 class="modal-title" id="exampleModalLongTitle">Check my page!</h2>
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h2 class="modal-title">Please, log in!</h2>
+                  </div>
+                  <div class="modal-body">
+                      <p>You should log in, if you want to review your balance.</p>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-lg btn-secondary custom-btn" data-bs-dismiss="modal">Close</button>
+                  </div>
               </div>
-              <div class="modal-body">
-                <p>Are you looking for a simple budgeting app? Control and plan your finances with my page!</p>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-lg btn-secondary custom-btn" data-bs-dismiss="modal">Close</button>
-              </div>
-            </div>
           </div>
-        </div>
+      </div>
       </main>
     </div>
     <footer class="mastfoot mt-auto bg-none">
@@ -75,4 +75,3 @@
   <script src="/budget-app-mvc/public/assets/js/script.js"></script>
 </body>
 </html>
-

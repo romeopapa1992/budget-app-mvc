@@ -49,7 +49,7 @@ if (isset($_GET['action'])) {
             }
             break;
 
-         case 'balance':
+        case 'balance':
             if (session_status() == PHP_SESSION_NONE) {
              session_start();
             }
@@ -58,9 +58,8 @@ if (isset($_GET['action'])) {
             $balanceController->showBalance();
             } else {
             echo json_encode(['status' => 'error', 'message' => 'You should log in, if you want to review your balance.']);
-         }
-         break;
-
+            }
+            break;
 
         case 'logout':  
             $userController->logout();

@@ -33,8 +33,40 @@ public function __construct($db)
         }
     }
 
-    public function showExpenseForm()
+    public function addExpenseCategory() {
+        $newCategory = $_POST['newExpenseCategory'];
+
+        // Connect to database
+        $db = new Database();
+        $query = "INSERT INTO expenses_category_assigned_to_users (user_id, name) VALUES (?, ?)";
+        $params = [$_SESSION['user_id'], $newCategory];
+        $db->execute($query, $params);
+
+        echo json_encode(['status' => 'success']);
+    }
+
+    public function removeExpenseCategory() {
+        $categoryId = $_POST['expenseCategorySelect'];
+
+        // Connect to database
+        $db = new Database();
+        $query = "DELETE FROM expenses_category_assigned_to_users WHERE id = ? AND user_id = ?";
+        $params = [$categoryId, $_SESSION['user_id']];
+        $db->execute($query, $params);
+
+        echo json_encode(['status' => 'success']);
+    }
+
+    
+
+    public function showExpensesForm()
     {
         require_once '../App/views/pages/expenses.html';
     }
+
+    public function showExpenseSettingsForm()
+    {
+        require_once '../App/views/pages/expenseSettings.html';
+    }
+
 }

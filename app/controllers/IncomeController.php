@@ -37,8 +37,37 @@ class IncomeController
         }
     }
 
+    public function addIncomeCategory() {
+        $newCategory = $_POST['newIncomeCategory'];
+
+        // Connect to database
+        $db = new Database();
+        $query = "INSERT INTO incomes_category_assigned_to_users (user_id, name) VALUES (?, ?)";
+        $params = [$_SESSION['user_id'], $newCategory];
+        $db->execute($query, $params);
+
+        echo json_encode(['status' => 'success']);
+    }
+
+    public function removeIncomeCategory() {
+        $categoryId = $_POST['incomeCategorySelect'];
+
+        // Connect to database
+        $db = new Database();
+        $query = "DELETE FROM incomes_category_assigned_to_users WHERE id = ? AND user_id = ?";
+        $params = [$categoryId, $_SESSION['user_id']];
+        $db->execute($query, $params);
+
+        echo json_encode(['status' => 'success']);
+    }
+
     public function showIncomesForm()
     {
         require_once '../App/views/pages/incomes.html';
+    }
+
+    public function showIncomeSettingsForm()
+    {
+        require_once '../App/views/pages/incomeSettings.html';
     }
 }

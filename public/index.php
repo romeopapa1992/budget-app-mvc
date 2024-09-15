@@ -8,12 +8,14 @@ use App\Controllers\UserController;
 use App\Controllers\IncomeController;
 use App\Controllers\ExpenseController;
 use App\Controllers\BalanceController; 
+use App\Controllers\SettingsController; 
 
 $homeController = new HomeController();
 $userController = new UserController($db);
 $incomeController = new IncomeController($db);
 $expenseController = new ExpenseController($db); 
 $balanceController = new BalanceController($db); 
+$settingsController = new settingsController($db); 
 
 if (isset($_GET['action'])) {
     switch ($_GET['action']) {
@@ -59,6 +61,30 @@ if (isset($_GET['action'])) {
             } else {
             echo json_encode(['status' => 'error', 'message' => 'You should log in, if you want to review your balance.']);
             }
+            break;
+
+        case 'editUser':
+            $userController->editUser();
+            break;
+
+        case 'expenseSettings':
+            $expenseController->showExpenseSettingsForm();
+            break;
+
+        case 'incomeSettings':
+            $incomeController->showIncomeSettingsForm();
+            break;
+        
+        case 'userSettings':
+            $settingsController->showUserSettingsForm();
+            break;
+
+        case 'updateUser':
+            $settingsController->updateUser();
+            break;
+
+        case 'deleteUser':
+            $settingsController->deleteUser();
             break;
 
         case 'logout':  

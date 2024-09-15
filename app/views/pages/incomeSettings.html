@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" class="h-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Income Settings</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="/budget-app-mvc/public/assets/home.css">
+</head>
+<body class="d-flex h-100 text-center">
+<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+    <nav class="navbar navbar-expand-lg navbar-light bg-none">
+        <div class="container-fluid">
+          <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php">Home</a>
+        </div>
+    </nav>
+    <main class="form-signin m-auto">
+        <h1>Income Settings</h1>
+        <div class="form-group mb-3">
+            <button type="button" class="btn btn-primary" id="addIncomeCategoryBtn">Add Income Category</button>
+            <button type="button" class="btn btn-danger" id="removeIncomeCategoryBtn">Remove Income Category</button>
+        </div>
+        <div id="incomeCategoryModal" class="modal fade" tabindex="-1" aria-labelledby="incomeCategoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="incomeCategoryModalLabel">Add Income Category</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addIncomeCategoryForm">
+                            <div class="mb-3">
+                                <label for="newIncomeCategory" class="form-label">Category Name:</label>
+                                <input type="text" class="form-control" id="newIncomeCategory" name="newIncomeCategory" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Category</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="removeIncomeCategoryModal" class="modal fade" tabindex="-1" aria-labelledby="removeIncomeCategoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="removeIncomeCategoryModalLabel">Remove Income Category</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="removeIncomeCategoryForm">
+                            <div class="mb-3">
+                                <label for="incomeCategorySelect" class="form-label">Select Category:</label>
+                                <select class="form-control" id="incomeCategorySelect" name="incomeCategorySelect" required>
+                                    <!-- Options will be populated dynamically -->
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-danger">Remove Category</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="/budget-app-mvc/public/assets/js/incomeSettings.js"></script>
+</body>
+</html>

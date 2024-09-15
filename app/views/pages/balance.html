@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en" class="h-100">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,8 +19,19 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <div class="navbar-nav ms-auto">
             <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/App/views/pages/incomes.html">Incomes</a>
-            <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/App/views/pages/expenses.html">Expenses</a> 
+            <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/App/views/pages/expenses.html">Expenses</a>
             <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php?action=logout">Log out</a>
+            
+            <div class="btn-group">
+              <button class="btn btn-lg btn-secondary custom-btn dropdown-toggle" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Settings
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="settingsDropdown">
+                <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=userSettings">User Settings</a></li>
+                <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=expenseSettings">Expense Settings</a></li>
+                <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=incomeSettings">Income Settings</a></li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>

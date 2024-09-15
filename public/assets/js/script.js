@@ -66,27 +66,27 @@ function validateAndSubmitForm(form, isLoginForm = false) {
     }
   }
 
-  function validatePassword(password) {
+function validatePassword(password) {
     const passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z]).{8,}$/;
     return passwordPattern.test(password);
-  }
+}
 
-  function validateEmail(email) {
+function validateEmail(email) {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
-  }
+}
 
-  function showError(input, errorElement) {
+function showError(input, errorElement) {
     input.addClass("error");
     errorElement.show();
-  }
+}
 
-  function hideError(input, errorElement) {
+function hideError(input, errorElement) {
     input.removeClass("error");
     errorElement.hide();
-  }
+}
 
-  function submitForm(form, isLoginForm) {
+function submitForm(form, isLoginForm) {
     $.ajax({
         url: form.attr('action'),
         type: 'POST',
@@ -120,33 +120,76 @@ function validateAndSubmitForm(form, isLoginForm = false) {
     });
 }
 
-$(document).ready(function() {
-  $('a[href="/budget-app-mvc/public/index.php?action=balance"]').on('click', function(e) {
-      e.preventDefault(); 
+$('#editOption').change(function() {
+    var selectedOption = $(this).val();
 
-      $.ajax({
-          url: '/budget-app-mvc/public/index.php?action=balance',
-          type: 'GET',
-          success: function(response) {
-              try {
-                  const jsonResponse = JSON.parse(response);
-                  if (jsonResponse.status === 'error') {
-                      $('#loginRequiredModal').modal('show');
-                      $('#loginRequiredModal').on('hidden.bs.modal', function() {
-                          window.location.href = '/budget-app-mvc/public/index.php?action=signin';
-                      });
-                  } else {
-                      window.location.href = '/budget-app-mvc/public/index.php?action=balance';
-                  }
-              } catch (e) {
-                  window.location.href = '/budget-app-mvc/public/index.php?action=balance';
-              }
-          },
-          error: function() {
-              alert('An error occurred. Please try again.');
-          }
-      });
-  });
+    $('#nameField, #surnameField, #emailField, #passwordField').hide();
+
+    if (selectedOption === 'name') {
+        $('#nameField').show();
+    } else if (selectedOption === 'surname') {
+        $('#surnameField').show();
+    } else if (selectedOption === 'email') {
+        $('#emailField').show();
+    } else if (selectedOption === 'password') {
+        $('#passwordField').show();
+    }
+
+    $('#editForm').show();
+});
+
+$('#editSelectionForm').submit(function(event) {
+    event.preventDefault();
+    
+    $.ajax({
+        url: $(this).attr('action'),
+        type: 'POST',
+        data: $(this).serialize(),
+        dataType: 'json',
+        success: function(response) {
+            if (response.status === 'success') {
+                alert('Data updated successfully.');
+                
+                // Reset the form after successful update
+                $('#editSelectionForm')[0].reset();
+                
+                // Optionally hide the edit form after submission
+                $('#editForm').hide();
+            } else if (response.status === 'error') {
+                handleErrors(response.errors);
+            }
+        },
+        error: function() {
+            alert('An error occurred. Please try again.');
+        }
+    });
+});
+
+$('a[href="/budget-app-mvc/public/index.php?action=balance"]').on('click', function(e) {
+    e.preventDefault(); 
+
+    $.ajax({
+        url: '/budget-app-mvc/public/index.php?action=balance',
+        type: 'GET',
+        success: function(response) {
+            try {
+                const jsonResponse = JSON.parse(response);
+                if (jsonResponse.status === 'error') {
+                    $('#loginRequiredModal').modal('show');
+                    $('#loginRequiredModal').on('hidden.bs.modal', function() {
+                        window.location.href = '/budget-app-mvc/public/index.php?action=signin';
+                    });
+                } else {
+                    window.location.href = '/budget-app-mvc/public/index.php?action=balance';
+                }
+            } catch (e) {
+                window.location.href = '/budget-app-mvc/public/index.php?action=balance';
+            }
+        },
+        error: function() {
+            alert('An error occurred. Please try again.');
+        }
+    });
 });
 
   function validateAndSubmitIncomeForm(form) {
@@ -220,86 +263,216 @@ function validateAndSubmitExpenseForm(form) {
   }
 }
 
-$(document).ready(function() {
-  $('#period').on('change', function() {
-      if ($(this).val() === 'custom') {
-          $('#custom-date-range').removeClass('d-none');
-      } else {
-          $('#custom-date-range').addClass('d-none');
-          $('#startDateError').addClass('d-none');
-          $('#endDateError').addClass('d-none');
-      }
-  });
+$('#period').on('change', function() {
+    if ($(this).val() === 'custom') {
+        $('#custom-date-range').removeClass('d-none');
+    } else {
+        $('#custom-date-range').addClass('d-none');
+        $('#startDateError').addClass('d-none');
+        $('#endDateError').addClass('d-none');
+    }
+});
 
-  $('#balance-form').on('submit', function(e) {
-      e.preventDefault();
+$('#balance-form').on('submit', function(e) {
+    e.preventDefault();
 
-      const period = $('#period').val();
-      const startDate = $('#startDate').val();
-      const endDate = $('#endDate').val();
-      let hasError = false;
+    const period = $('#period').val();
+    const startDate = $('#startDate').val();
+    const endDate = $('#endDate').val();
+    let hasError = false;
 
-      if (period === 'custom') {
-          if (!startDate) {
-              $('#startDateError').removeClass('d-none');
-              hasError = true;
-          } else {
-              $('#startDateError').addClass('d-none');
-          }
+    if (period === 'custom') {
+        if (!startDate) {
+            $('#startDateError').removeClass('d-none');
+            hasError = true;
+        } else {
+            $('#startDateError').addClass('d-none');
+        }
 
-          if (!endDate) {
-              $('#endDateError').removeClass('d-none');
-              hasError = true;
-          } else {
-              $('#endDateError').addClass('d-none');
-          }
+        if (!endDate) {
+            $('#endDateError').removeClass('d-none');
+            hasError = true;
+        } else {
+            $('#endDateError').addClass('d-none');
+        }
 
-          if (hasError) {
-              return;
-          }
-      }
+        if (hasError) {
+            return;
+        }
+    }
 
-      $.ajax({
-          type: 'POST',
-          url: '/budget-app-mvc/public/index.php?action=balance',
-          data: {
-              period: period,
-              startDate: startDate,
-              endDate: endDate
-          },
-          success: function(response) {
-              const balanceData = JSON.parse(response);
-              if (balanceData.error) {
-                  alert('Error: ' + balanceData.error);
-              } else {
-                  $('#balance').text('Balance: ' + balanceData.balance);
-                  $('#total-income').text('Total Income: ' + balanceData.income);
-                  $('#total-expense').text('Total Expense: ' + balanceData.expense);
-                  $('#balance-info').removeClass('d-none');
-              }
-          },
-          error: function() {
-              alert('An error occurred. Please try again.');
-          }
-      });
-  });
-
-  $(document).ready(function() {
-
-    $('#clear-button').on('click', function() {
-        $('#balance-form')[0].reset();
-        $('#balance-info').addClass('d-none');
-    });
-
-    $('#clear-income-button').on('click', function() {
-        $('#income-form')[0].reset();
-    });
-
-    $('#clear-expense-button').on('click', function() {
-        $('#expense-form')[0].reset();
+    $.ajax({
+        type: 'POST',
+        url: '/budget-app-mvc/public/index.php?action=balance',
+        data: {
+            period: period,
+            startDate: startDate,
+            endDate: endDate
+        },
+        success: function(response) {
+            const balanceData = JSON.parse(response);
+            if (balanceData.error) {
+                alert('Error: ' + balanceData.error);
+            } else {
+                $('#balance').text('Balance: ' + balanceData.balance);
+                $('#total-income').text('Total Income: ' + balanceData.income);
+                $('#total-expense').text('Total Expense: ' + balanceData.expense);
+                $('#balance-info').removeClass('d-none');
+            }
+        },
+        error: function() {
+            alert('An error occurred. Please try again.');
+        }
     });
 });
-  
+
+$('#clear-button').on('click', function() {
+    $('#balance-form')[0].reset();
+    $('#balance-info').addClass('d-none');
 });
+
+$('#clear-income-button').on('click', function() {
+    $('#income-form')[0].reset();
+});
+
+$('#clear-expense-button').on('click', function() {
+    $('#expense-form')[0].reset();
+});
+
+$('#deleteAccountBtn').on('click', function() {
+    $('#deleteAccountModal').modal('show');
+});
+
+$('#confirmDeleteBtn').on('click', function() {
+    $.ajax({
+        url: '/budget-app-mvc/public/index.php?action=deleteUser',
+        type: 'POST',
+        success: function(response) {
+            const jsonResponse = JSON.parse(response);
+            if (jsonResponse.status === 'success') {
+                alert('Account deleted successfully.');
+                window.location.href = '/budget-app-mvc/public/index.php';
+            } else {
+                alert('Failed to delete account. Please try again.');
+            }
+        },
+        error: function() {
+            alert('An error occurred. Please try again.');
+        }
+    });
+    $('#deleteAccountModal').modal('hide');
+});
+
+$('#addExpenseCategoryBtn').click(function() {
+    $('#expenseCategoryModal').modal('show');
+});
+$('#removeExpenseCategoryBtn').click(function() {
+    $('#removeExpenseCategoryModal').modal('show');
+    loadExpenseCategories();
+});
+
+// Add expense category
+$('#addExpenseCategoryForm').submit(function(event) {
+    event.preventDefault();
+    $.ajax({
+        url: '/budget-app-mvc/public/controllers/expenseController.php',
+        type: 'POST',
+        data: $(this).serialize() + '&action=addExpenseCategory',
+        success: function(response) {
+            if (response.status === 'success') {
+                alert('Category added successfully');
+                $('#expenseCategoryModal').modal('hide');
+            }
+        }
+    });
+});
+
+// Remove expense category
+$('#removeExpenseCategoryForm').submit(function(event) {
+    event.preventDefault();
+    $.ajax({
+        url: '/budget-app-mvc/public/controllers/expenseController.php',
+        type: 'POST',
+        data: $(this).serialize() + '&action=removeExpenseCategory',
+        success: function(response) {
+            if (response.status === 'success') {
+                alert('Category removed successfully');
+                $('#removeExpenseCategoryModal').modal('hide');
+            }
+        }
+    });
+});
+
+// Load expense categories
+function loadExpenseCategories() {
+    $.ajax({
+        url: '/budget-app-mvc/public/controllers/expenseController.php',
+        type: 'POST',
+        data: {action: 'getExpenseCategories'},
+        success: function(response) {
+            var select = $('#expenseCategorySelect');
+            select.empty();
+            response.categories.forEach(function(category) {
+                select.append($('<option></option>').val(category.id).text(category.name));
+            });
+        }
+    });
+}
+
+$('#addIncomeCategoryBtn').click(function() {
+    $('#incomeCategoryModal').modal('show');
+});
+$('#removeIncomeCategoryBtn').click(function() {
+    $('#removeIncomeCategoryModal').modal('show');
+    loadIncomeCategories();
+});
+
+// Add income category
+$('#addIncomeCategoryForm').submit(function(event) {
+    event.preventDefault();
+    $.ajax({
+        url: '/budget-app-mvc/public/controllers/incomeController.php',
+        type: 'POST',
+        data: $(this).serialize() + '&action=addIncomeCategory',
+        success: function(response) {
+            if (response.status === 'success') {
+                alert('Category added successfully');
+                $('#incomeCategoryModal').modal('hide');
+            }
+        }
+    });
+});
+
+// Remove income category
+$('#removeIncomeCategoryForm').submit(function(event) {
+    event.preventDefault();
+    $.ajax({
+        url: '/budget-app-mvc/public/controllers/incomeController.php',
+        type: 'POST',
+        data: $(this).serialize() + '&action=removeIncomeCategory',
+        success: function(response) {
+            if (response.status === 'success') {
+                alert('Category removed successfully');
+                $('#removeIncomeCategoryModal').modal('hide');
+            }
+        }
+    });
+});
+
+// Load income categories
+function loadIncomeCategories() {
+    $.ajax({
+        url: '/budget-app-mvc/public/controllers/incomeController.php',
+        type: 'POST',
+        data: {action: 'getIncomeCategories'},
+        success: function(response) {
+            var select = $('#incomeCategorySelect');
+            select.empty();
+            response.categories.forEach(function(category) {
+                select.append($('<option></option>').val(category.id).text(category.name));
+            });
+        }
+    });
+}
 
 });

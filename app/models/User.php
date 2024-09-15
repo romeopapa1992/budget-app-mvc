@@ -41,4 +41,54 @@ class User
 
         return $query->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function updateUser($userId, $name = null, $surname = null, $email = null)
+{
+    $updates = [];
+    if ($name) {
+        $updates[] = 'name = :name';
+    }
+    if ($surname) {
+        $updates[] = 'surname = :surname';
+    }
+    if ($email) {
+        $updates[] = 'email = :email';
+    }
+
+    if (empty($updates)) {
+        return false; // Brak danych do aktualizacji
+    }
+
+    $sql = 'UPDATE users SET ' . implode(', ', $updates) . ' WHERE id = :id';
+    $query = $this->db->prepare($sql);
+    if ($name) {
+        $query->bindValue(':name', $name);
+    }
+    if ($surname) {
+        $query->bindValue(':surname', $surname);
+    }
+    if ($email) {
+        $query->bindValue(':email', $email);
+    }
+    $query->bindValue(':id', $userId);
+    return $query->execute();
+}
+
+
+    public function updateUserPassword($userId, $hashedPassword)
+    {
+        $sql = 'UPDATE users SET password = :password WHERE id = :id';
+        $query = $this->db->prepare($sql);
+        $query->bindValue(':password', $hashedPassword);
+        $query->bindValue(':id', $userId);
+        return $query->execute();
+    }
+
+    public function deleteUserById($userId)
+    {
+        $sql = 'DELETE FROM users WHERE id = :id';
+        $query = $this->db->prepare($sql);
+        $query->bindValue(':id', $userId);
+        return $query->execute();
+    }
 }

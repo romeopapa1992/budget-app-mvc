@@ -24,6 +24,16 @@
               <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/App/views/pages/expenses.html">Expenses</a>
               <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/App/views/pages/balance.html">Balance</a>
               <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php?action=logout">Log out</a>
+              <div class="btn-group">
+                <button class="btn btn-lg btn-secondary custom-btn dropdown-toggle" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                  Settings
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="settingsDropdown">
+                  <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=userSettings">User Settings</a></li>
+                  <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=expenseSettings">Expense Settings</a></li>
+                  <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=incomeSettings">Income Settings</a></li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>

@@ -17,53 +17,28 @@
     </nav>
     <main class="form-signin m-auto">
         <h1>Income Settings</h1>
-        <div class="form-group mb-3">
-            <button type="button" class="btn btn-primary" id="addIncomeCategoryBtn">Add Income Category</button>
-            <button type="button" class="btn btn-danger" id="removeIncomeCategoryBtn">Remove Income Category</button>
-        </div>
-        <div id="incomeCategoryModal" class="modal fade" tabindex="-1" aria-labelledby="incomeCategoryModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="incomeCategoryModalLabel">Add Income Category</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="addIncomeCategoryForm">
-                            <div class="mb-3">
-                                <label for="newIncomeCategory" class="form-label">Category Name:</label>
-                                <input type="text" class="form-control" id="newIncomeCategory" name="newIncomeCategory" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Add Category</button>
-                        </form>
-                    </div>
-                </div>
+        
+        <form id="addIncomeCategoryForm" action="/budget-app-mvc/public/index.php?action=addIncomeCategory" method="POST">
+            <div class="form-group mb-3">
+                <label for="newIncomeCategory">Add Income Category:</label>
+                <input type="text" class="form-control" id="newIncomeCategory" name="newIncomeCategory" placeholder="Enter category name" required>
+                <button type="submit" class="btn btn-primary mt-2">Add Category</button>
             </div>
-        </div>
-        <div id="removeIncomeCategoryModal" class="modal fade" tabindex="-1" aria-labelledby="removeIncomeCategoryModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="removeIncomeCategoryModalLabel">Remove Income Category</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="removeIncomeCategoryForm">
-                            <div class="mb-3">
-                                <label for="incomeCategorySelect" class="form-label">Select Category:</label>
-                                <select class="form-control" id="incomeCategorySelect" name="incomeCategorySelect" required>
-                                    <!-- Options will be populated dynamically -->
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-danger">Remove Category</button>
-                        </form>
-                    </div>
-                </div>
+        </form>
+        
+        <form id="removeIncomeCategoryForm" action="/budget-app-mvc/public/index.php?action=removeIncomeCategory" method="POST">
+            <div class="form-group mb-3">
+                <label for="incomeCategorySelect">Remove Income Category:</label>
+                <select class="form-control" id="incomeCategorySelect" name="incomeCategorySelect">
+
+                </select>
+                <button type="submit" class="btn btn-danger mt-2">Remove Category</button>
             </div>
-        </div>
+        </form>
+        
     </main>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="/budget-app-mvc/public/assets/js/incomeSettings.js"></script>
+<script src="/budget-app-mvc/public/assets/js/script.js"></script>
 </body>
 </html>

@@ -33,31 +33,43 @@ public function __construct($db)
         }
     }
 
-    public function addExpenseCategory() {
-        $newCategory = $_POST['newExpenseCategory'];
+    public function addExpenseCategory()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            session_start();
+            $userId = $_SESSION['user_id'];
+            $categoryName = trim($_POST['newExpenseCategory']);
 
-        // Connect to database
-        $db = new Database();
-        $query = "INSERT INTO expenses_category_assigned_to_users (user_id, name) VALUES (?, ?)";
-        $params = [$_SESSION['user_id'], $newCategory];
-        $db->execute($query, $params);
-
-        echo json_encode(['status' => 'success']);
+            if ($this->expenseModel->addExpenseCategory($userId, $categoryName)) {
+                echo json_encode(['status' => 'success', 'message' => 'New category has been added successfully!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Category already exists']);
+            }
+        }
     }
 
-    public function removeExpenseCategory() {
+public function removeExpenseCategory()
+{
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        session_start();
+        $userId = $_SESSION['user_id'];
         $categoryId = $_POST['expenseCategorySelect'];
 
-        // Connect to database
-        $db = new Database();
-        $query = "DELETE FROM expenses_category_assigned_to_users WHERE id = ? AND user_id = ?";
-        $params = [$categoryId, $_SESSION['user_id']];
-        $db->execute($query, $params);
-
-        echo json_encode(['status' => 'success']);
+        if ($this->expenseModel->removeExpenseCategory($userId, $categoryId)) {
+            echo json_encode(['status' => 'success', 'message' => 'Category removed successfully!']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Failed to remove category.']);
+        }
     }
+}
 
-    
+public function getExpenseCategories()
+{
+    session_start();
+    $categories = $this->expenseModel->getExpenseCategories();
+    echo json_encode($categories);
+}
+
 
     public function showExpensesForm()
     {

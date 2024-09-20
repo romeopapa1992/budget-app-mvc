@@ -37,33 +37,46 @@ class IncomeController
         }
     }
 
-    public function addIncomeCategory() {
-        $newCategory = $_POST['newIncomeCategory'];
-
-        // Connect to database
-        $db = new Database();
-        $query = "INSERT INTO incomes_category_assigned_to_users (user_id, name) VALUES (?, ?)";
-        $params = [$_SESSION['user_id'], $newCategory];
-        $db->execute($query, $params);
-
-        echo json_encode(['status' => 'success']);
-    }
-
-    public function removeIncomeCategory() {
-        $categoryId = $_POST['incomeCategorySelect'];
-
-        // Connect to database
-        $db = new Database();
-        $query = "DELETE FROM incomes_category_assigned_to_users WHERE id = ? AND user_id = ?";
-        $params = [$categoryId, $_SESSION['user_id']];
-        $db->execute($query, $params);
-
-        echo json_encode(['status' => 'success']);
-    }
-
-    public function showIncomesForm()
+    public function addIncomeCategory()
     {
-        require_once '../App/views/pages/incomes.html';
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            session_start();
+            $userId = $_SESSION['user_id'];
+            $categoryName = trim($_POST['newIncomeCategory']);
+
+            if ($this->incomeModel->addIncomeCategory($userId, $categoryName)) {
+                echo json_encode(['status' => 'success', 'message' => 'New category has been added successfully!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Category already exists']);
+            }
+        }
+    }
+
+    public function removeIncomeCategory()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            session_start();
+            $userId = $_SESSION['user_id'];
+            $categoryId = $_POST['incomeCategorySelect'];
+
+            if ($this->incomeModel->removeIncomeCategory($userId, $categoryId)) {
+                echo json_encode(['status' => 'success', 'message' => 'Category removed successfully!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Failed to remove category.']);
+            }
+        }
+    }
+
+    public function getIncomeCategories()
+    {
+        session_start();
+        $categories = $this->incomeModel->getIncomeCategories();
+        echo json_encode($categories);
+    }
+
+    public function showIncomeForm()
+    {
+        require_once '../App/views/pages/income.html';
     }
 
     public function showIncomeSettingsForm()

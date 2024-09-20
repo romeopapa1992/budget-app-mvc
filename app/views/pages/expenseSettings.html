@@ -17,53 +17,28 @@
     </nav>
     <main class="form-signin m-auto">
         <h1>Expense Settings</h1>
-        <div class="form-group mb-3">
-            <button type="button" class="btn btn-primary" id="addExpenseCategoryBtn">Add Expense Category</button>
-            <button type="button" class="btn btn-danger" id="removeExpenseCategoryBtn">Remove Expense Category</button>
-        </div>
-        <div id="expenseCategoryModal" class="modal fade" tabindex="-1" aria-labelledby="expenseCategoryModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="expenseCategoryModalLabel">Add Expense Category</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="addExpenseCategoryForm">
-                            <div class="mb-3">
-                                <label for="newExpenseCategory" class="form-label">Category Name:</label>
-                                <input type="text" class="form-control" id="newExpenseCategory" name="newExpenseCategory" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Add Category</button>
-                        </form>
-                    </div>
-                </div>
+        
+        <form id="addExpenseCategoryForm" action="/budget-app-mvc/public/index.php?action=addExpenseCategory" method="POST">
+            <div class="form-group mb-3">
+                <label for="newExpenseCategory">Add Expense Category:</label>
+                <input type="text" class="form-control" id="newExpenseCategory" name="newExpenseCategory" placeholder="Enter category name" required>
+                <button type="submit" class="btn btn-primary mt-2">Add Category</button>
             </div>
-        </div>
-        <div id="removeExpenseCategoryModal" class="modal fade" tabindex="-1" aria-labelledby="removeExpenseCategoryModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="removeExpenseCategoryModalLabel">Remove Expense Category</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="removeExpenseCategoryForm">
-                            <div class="mb-3">
-                                <label for="expenseCategorySelect" class="form-label">Select Category:</label>
-                                <select class="form-control" id="expenseCategorySelect" name="expenseCategorySelect" required>
-                                    <!-- Options will be populated dynamically -->
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-danger">Remove Category</button>
-                        </form>
-                    </div>
-                </div>
+        </form>
+        
+        <form id="removeExpenseCategoryForm" action="/budget-app-mvc/public/index.php?action=removeExpenseCategory" method="POST">
+            <div class="form-group mb-3">
+                <label for="expenseCategorySelect">Remove Expense Category:</label>
+                <select class="form-control" id="expenseCategorySelect" name="expenseCategorySelect">
+                    
+                </select>
+                <button type="submit" class="btn btn-danger mt-2">Remove Category</button>
             </div>
-        </div>
+        </form>
+        
     </main>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="/budget-app-mvc/public/assets/js/expenseSettings.js"></script>
+<script src="/budget-app-mvc/public/assets/js/script.js"></script>
 </body>
 </html>

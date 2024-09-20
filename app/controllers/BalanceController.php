@@ -30,14 +30,13 @@ class BalanceController
             $balanceData = $this->balanceModel->getBalance($period, $startDate, $endDate);
             echo json_encode($balanceData);
             exit();  
-        } else {
+            } else {
             echo json_encode(['error' => 'Period not specified']);
             exit();
-        }
-    } else {
+            }
+        } else {
         require_once '../App/views/pages/balance.html';
+        }
     }
-}
-
 
 }

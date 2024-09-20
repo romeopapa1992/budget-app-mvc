@@ -62,4 +62,42 @@ class Expense
         $query->bindValue(':expense_comment', $comment, PDO::PARAM_STR);
         return $query->execute();
     }
+
+        public function addExpenseCategory($userId, $categoryName)
+    {
+        $sql = 'SELECT id FROM expenses_category_default WHERE name = :name';
+        $query = $this->db->prepare($sql);
+        $query->bindValue(':name', $categoryName, PDO::PARAM_STR);
+        $query->execute();
+        $existingCategory = $query->fetch(PDO::FETCH_ASSOC);
+
+        if ($existingCategory) {
+            return false; 
+        } else {
+        // Dodajemy kategorię, jeśli jej nie ma
+        $sql = 'INSERT INTO expenses_category_default (name) VALUES (:name)';
+        $query = $this->db->prepare($sql);
+        $query->bindValue(':name', $categoryName, PDO::PARAM_STR);
+        return $query->execute();
+        }
+    }
+
+    public function removeExpenseCategory($userId, $categoryId)
+    {
+        $sql = 'DELETE FROM expenses_category_default WHERE id = :id';
+        $query = $this->db->prepare($sql);
+        $query->bindValue(':id', $categoryId, PDO::PARAM_INT);
+        return $query->execute();
+    }
+
+
+        public function getExpenseCategories()
+    {
+        $sql = 'SELECT id, name FROM expenses_category_default';
+        $query = $this->db->prepare($sql);
+        $query->execute();
+        return $query->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }
+

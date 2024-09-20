@@ -8,14 +8,12 @@ use App\Controllers\UserController;
 use App\Controllers\IncomeController;
 use App\Controllers\ExpenseController;
 use App\Controllers\BalanceController; 
-use App\Controllers\SettingsController; 
 
 $homeController = new HomeController();
 $userController = new UserController($db);
 $incomeController = new IncomeController($db);
 $expenseController = new ExpenseController($db); 
 $balanceController = new BalanceController($db); 
-$settingsController = new settingsController($db); 
 
 if (isset($_GET['action'])) {
     switch ($_GET['action']) {
@@ -71,20 +69,44 @@ if (isset($_GET['action'])) {
             $expenseController->showExpenseSettingsForm();
             break;
 
+        case 'addExpenseCategory':
+            $expenseController->addExpenseCategory();
+            break;
+
+        case 'removeExpenseCategory':
+            $expenseController->removeExpenseCategory();
+            break;
+
+        case 'getExpenseCategories':
+            $expenseController->getExpenseCategories();
+            break;
+
         case 'incomeSettings':
             $incomeController->showIncomeSettingsForm();
             break;
+
+        case 'addIncomeCategory':
+            $incomeController->addIncomeCategory();
+            break;
+
+        case 'removeIncomeCategory':
+            $incomeController->removeIncomeCategory();
+            break;
+
+        case 'getIncomeCategories':
+            $incomeController->getIncomeCategories();
+            break;
         
         case 'userSettings':
-            $settingsController->showUserSettingsForm();
+            $userController->showUserSettingsForm();
             break;
 
         case 'updateUser':
-            $settingsController->updateUser();
+            $userController->updateUser();
             break;
 
         case 'deleteUser':
-            $settingsController->deleteUser();
+            $userController->deleteUser();
             break;
 
         case 'logout':  

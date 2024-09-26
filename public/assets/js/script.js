@@ -37,33 +37,24 @@ $(document).ready(function() {
     function validateAndSubmitForm(form, isLoginForm = false) {
         const inputs = form.find("input");
         let hasError = false;
-
+    
         inputs.each(function() {
             const input = $(this);
             const value = input.val().trim();
             const errorElement = input.siblings(".error-text");
-            const inputType = input.attr('type');
-
+    
             if (value === "") {
                 showError(input, errorElement);
                 hasError = true;
             } else {
-                if (!isLoginForm && inputType === 'password' && !validatePassword(value)) {
-                    showError(input, errorElement);
-                    hasError = true;
-                } else if (inputType === 'email' && !validateEmail(value)) {
-                    showError(input, errorElement);
-                    hasError = true;
-                } else {
-                    hideError(input, errorElement);
-                }
+                hideError(input, errorElement);
             }
         });
-
+    
         if (!hasError) {
             submitForm(form, isLoginForm);
         }
-    }
+    }    
 
     function validatePassword(password) {
         const passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z]).{8,}$/;
@@ -93,21 +84,25 @@ $(document).ready(function() {
             dataType: 'json',
             success: function(response) {
                 if (response.status === 'success') {
+                    alert(response.message); 
+                    form[0].reset(); 
+    
                     if (isLoginForm) {
                         window.location.href = '/budget-app-mvc/public/index.php?action=balance';
+                    } else if (form.attr('action').includes('registration')) {
+                        // Przekierowanie do logowania po pomyślnej rejestracji
+                        window.location.href = '/budget-app-mvc/public/index.php?action=signin';
                     }
                 } else if (response.status === 'error') {
-                    alert(response.message || 'An error occurred. Please try again.');
+                    alert(response.message || 'Email already exists.');
+                    form[0].reset(); 
                 } else {
                     console.log('Unexpected response: ', response);
                 }
-            },
-            error: function(jqXHR) {
-                console.log('Error response: ', jqXHR.responseText);
-                alert('An error occurred. Please check your server.');
-            }
+            }            
         });
     }
+    
   
     $('#editOption').change(function() {
         var selectedOption = $(this).val();
@@ -176,6 +171,7 @@ $(document).ready(function() {
             }
         });
     });
+
     
     function validateAndSubmitExpenseForm(form) {
         const amount = $('#amount').val().trim();
@@ -335,6 +331,7 @@ $(document).ready(function() {
     $('#removeIncomeCategoryBtn').click(function() {
         $('#removeIncomeCategoryModal').modal('show');
     });
+    
     
     $.ajax({
         url: '/budget-app-mvc/public/index.php?action=getExpenseCategories',

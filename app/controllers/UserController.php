@@ -17,50 +17,55 @@ class UserController
     }
 
     public function registration()
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $name = trim($_POST['name']);
-            $surname = trim($_POST['surname']);
-            $email = trim($_POST['email']);
-            $password = $_POST['password'];
+{
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $name = trim($_POST['name']);
+        $surname = trim($_POST['surname']);
+        $email = trim($_POST['email']);
+        $password = $_POST['password'];
 
-            $errors = [];
+        $errors = [];
 
-            if (empty($name)) {
-                $errors['name'] = 'First name cannot be empty.';
-            }
+        // Walidacja danych wejściowych
+        if (empty($name)) {
+            $errors['name'] = 'First name cannot be empty.';
+        }
 
-            if (empty($surname)) {
-                $errors['surname'] = 'Last name cannot be empty.';
-            }
+        if (empty($surname)) {
+            $errors['surname'] = 'Last name cannot be empty.';
+        }
 
         if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $errors['email'] = 'Looks like this is not an email.';
-            } elseif ($this->userModel->checkEmailExists($email)) {
-                $errors['email'] = 'Email already exists.';
-            }
-
-            if (empty($password) || !preg_match('/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z]).{8,}$/', $password)) {
-                $errors['password'] = 'Passwords must meet complexity requirements.';
-            }
-
-            if (!empty($errors)) {
-                echo json_encode(['status' => 'error', 'errors' => $errors]);
-                return;
-            }
-
-            $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-
-            if ($this->userModel->createUser($name, $surname, $email, $hashed_password)) {
-                echo json_encode(['status' => 'success']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Registration failed.']);
-            }
-        } else {
-            header('Location: /budget-app-mvc/public/index.php?action=registration');
-            exit();
+            $errors['email'] = 'Looks like this is not an email.';
         }
+
+        if ($this->userModel->checkEmailExists($email)) {
+            $errors['email'] = 'Email already exists.';
+        }
+
+        if (empty($password) || !preg_match('/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z]).{8,}$/', $password)) {
+            $errors['password'] = 'Passwords must meet complexity requirements.';
+        }
+
+        if (!empty($errors)) {
+            echo json_encode(['status' => 'error', 'errors' => $errors]);
+            return;
+        }
+
+        // Hashowanie hasła i tworzenie użytkownika
+        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+
+        if ($this->userModel->createUser($name, $surname, $email, $hashed_password)) {
+            echo json_encode(['status' => 'success', 'message' => 'Registration successful.']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Registration failed.']);
+        }
+    } else {
+        header('Location: /budget-app-mvc/public/index.php?action=registration');
+        exit();
     }
+}
+
 
    public function signin() {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -76,7 +81,7 @@ class UserController
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['email'] = $user['email'];
 
-            echo json_encode(['status' => 'success']);
+            echo json_encode(['status' => 'success', 'message' => 'Successfully logged in']);
             return;
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Wrong email or password!']);

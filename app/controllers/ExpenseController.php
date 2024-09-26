@@ -65,7 +65,6 @@ public function removeExpenseCategory()
 
 public function getExpenseCategories()
 {
-    session_start();
     $categories = $this->expenseModel->getExpenseCategories();
     echo json_encode($categories);
 }
@@ -81,4 +80,4 @@ public function getExpenseCategories()
         require_once '../App/views/pages/expenseSettings.html';
     }
 
-}
+} 

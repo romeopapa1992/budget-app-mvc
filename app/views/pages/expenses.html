@@ -40,7 +40,7 @@
     </nav>
 
     <main class="form-signin m-auto">
-      <form class="p-3 mx-2" action="/budget-app-mvc/public/index.php?action=expense" method="post" id="expense-form">
+      <form class="p-3 mx-2" action="/budget-app-mvc/public/index.php?action=expense" method="post" id="addExpenseForm">
         <h1 class="h3 mb-3 fw-bold">Enter expense data</h1>
         <div class="form-floating my-2">
           <input type="text" class="form-control" id="amount" placeholder="$$$" name="amount">
@@ -53,9 +53,8 @@
           <p class="error-text" id="dateError">Select the date.</p>
         </div>
         <div class="form-floating my-2">
-            <select class="form-control" id="expenseCategorySelect" name="expenseCategorySelect" required>             
+            <select class="form-control" id="expenseCategorySelect" name="category">             
             </select>
-          </select>
           <label for="category">Expense Category</label>
           <p class="error-text" id="categoryError">Select the category.</p>
         </div>

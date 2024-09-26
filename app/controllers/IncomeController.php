@@ -19,23 +19,42 @@ class IncomeController
     {
         $this->incomeModel = new Income($db);
     }
-
     public function income()
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $userId = $_SESSION['user_id'];
-            $amount = trim($_POST['amount']);
-            $dateOfIncome = trim($_POST['date']);
-            $category = trim($_POST['category']);
-            $comment = ucfirst(strtolower(trim($_POST['comment'])));
+{
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        $userId = $_SESSION['user_id'];
+        $amount = trim($_POST['amount']);
+        $dateOfIncome = trim($_POST['date']);
+        $category = trim($_POST['category']);
+        $comment = ucfirst(strtolower(trim($_POST['comment'])));
 
-            if ($this->incomeModel->addIncome($userId, $amount, $dateOfIncome, $category, $comment)) {
-                echo json_encode(['status' => 'success', 'message' => 'Income has been added successfully!']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'An error occurred while adding the income.']);
-            }
+        // Backend validation for empty fields
+        $errors = [];
+        if (empty($amount)) {
+            $errors['amount'] = "Amount cannot be empty.";
+        }
+        if (empty($dateOfIncome)) {
+            $errors['date'] = "Date cannot be empty.";
+        }
+        if (empty($category)) {
+            $errors['category'] = "Category cannot be empty.";
+        }
+
+        // If there are validation errors, return them
+        if (!empty($errors)) {
+            echo json_encode(['status' => 'error', 'errors' => $errors]);
+            exit;
+        }
+
+        // Continue with database insert if no errors
+        if ($this->incomeModel->addIncome($userId, $amount, $dateOfIncome, $category, $comment)) {
+            echo json_encode(['status' => 'success', 'message' => 'Income has been added successfully!']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'An error occurred while adding the income.']);
         }
     }
+}
+
 
     public function addIncomeCategory()
     {
@@ -69,7 +88,6 @@ class IncomeController
 
     public function getIncomeCategories()
     {
-        session_start();
         $categories = $this->incomeModel->getIncomeCategories();
         echo json_encode($categories);
     }
@@ -83,4 +101,4 @@ class IncomeController
     {
         require_once '../App/views/pages/incomeSettings.html';
     }
-}
+} 

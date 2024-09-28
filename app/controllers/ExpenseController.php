@@ -69,7 +69,6 @@ public function getExpenseCategories()
     echo json_encode($categories);
 }
 
-
     public function showExpensesForm()
     {
         require_once '../App/views/pages/expenses.html';

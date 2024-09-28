@@ -3,7 +3,8 @@ body {
     background-size: 120% 100%;
 }
 
-.inner, main {
+.inner, 
+main {
     background: linear-gradient(300deg, #055508, #f1f9f2, #72ef87);
     background-size: 180% 180%;
     animation: gradient-animation 18s ease infinite;
@@ -67,4 +68,9 @@ input.error ~ p.error-text {
 
 .error-text, img {
     display: none;
+}
+
+.button-details {
+  display: flex;
+  justify-content: center;
 }

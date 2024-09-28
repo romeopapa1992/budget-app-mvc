@@ -90,7 +90,6 @@ $(document).ready(function() {
                     if (isLoginForm) {
                         window.location.href = '/budget-app-mvc/public/index.php?action=balance';
                     } else if (form.attr('action').includes('registration')) {
-                        // Przekierowanie do logowania po pomyślnej rejestracji
                         window.location.href = '/budget-app-mvc/public/index.php?action=signin';
                     }
                 } else if (response.status === 'error') {
@@ -372,5 +371,108 @@ $(document).ready(function() {
             }
         });
     });    
+
+    $('#details-button').click(function() {
+
+    let period = $('#period').val();
+    let startDate = $('#startDate').val();
+    let endDate = $('#endDate').val();
+
+    // Sprawdzenie, czy dla niestandardowego okresu wprowadzono daty
+    if (period === 'custom' && (!startDate || !endDate)) {
+        alert('Proszę wprowadzić zarówno datę początkową, jak i końcową dla niestandardowego okresu.');
+        return;
+    }
+
+        $.ajax({
+            url: '/budget-app-mvc/public/index.php?action=getDetails',
+            type: 'POST',
+            data: {
+                period: $('#period').val(),
+                start_date: $('#startDate').val(),
+                end_date: $('#endDate').val()
+            },
+            success: function(response) {
+                console.log(response);
+                try {
+                    let data = JSON.parse(response);
+
+                    if (data.error) {
+                        console.error('Błąd z serwera:', data.error);
+                        alert('Błąd: ' + data.error);
+                        return;
+                    }
+
+                    // Wypełnianie tabeli przychodów
+                    let incomeDetails = $('#income-details tbody');
+                    incomeDetails.empty();
+                    if (data.incomes.length) {
+                        data.incomes.forEach((income, index) => {
+                            incomeDetails.append(`
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td>${income.date_of_income}</td>
+                                    <td>${income.amount}</td>
+                                    <td>${income.category}</td>
+                                    <td>${income.comment}</td>
+                                </tr>
+                            `);
+                        });
+                    } else {
+                        incomeDetails.append('<tr><td colspan="5">Brak przychodów dla wybranego okresu.</td></tr>');
+                    }
+
+                    // Wypełnianie tabeli wydatków
+                    let expenseDetails = $('#expense-details tbody');
+                    expenseDetails.empty();
+                    if (data.expenses.length) {
+                        data.expenses.forEach((expense, index) => {
+                            expenseDetails.append(`
+                                <tr>
+                                    <td>${index + 1}</td>
+                                    <td>${expense.date_of_expense}</td>
+                                    <td>${expense.amount}</td>
+                                    <td>${expense.category}</td>
+                                    <td>${expense.payment_method}</td>
+                                    <td>${expense.comment}</td>
+                                </tr>
+                            `);
+                        });
+                    } else {
+                        expenseDetails.append('<tr><td colspan="6">Brak wydatków dla wybranego okresu.</td></tr>');
+                    }
+
+                    $('#details-section').removeClass('d-none');
+                } catch (error) {
+                    console.error('Błąd przetwarzania odpowiedzi:', error);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('AJAX Error:', textStatus, errorThrown);
+                alert('Wystąpił błąd podczas pobierania danych.');
+            }
+        });
+    });
+
+    $('#period').on('change', function() {
+        if ($(this).val() === 'custom') {
+            $('#custom-date-range').removeClass('d-none');
+        } else {
+            $('#custom-date-range').addClass('d-none');
+        }
+    });
+
+    $('#balance-form').submit(function(e) {
+        e.preventDefault();
+        // Można dodać tutaj AJAX do wyświetlenia salda, 
+        // lub pozwolić na standardowe przesłanie formularza
+    });
+
+    $('#clear-button').click(function() {
+        $('#balance-form')[0].reset();
+        $('#custom-date-range').addClass('d-none');
+        $('#balance-info').addClass('d-none');
+        $('#details-section').addClass('d-none');
+    });
     
 });

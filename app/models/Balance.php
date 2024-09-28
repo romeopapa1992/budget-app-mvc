@@ -57,7 +57,7 @@ class Balance
     $query->bindValue(':end_date', $endDate, \PDO::PARAM_STR);
     $query->execute();
 
-    return $query->fetch(\PDO::FETCH_ASSOC)['total_income'] ?? 0;  // Dodanie \ przed PDO
+    return $query->fetch(\PDO::FETCH_ASSOC)['total_income'] ?? 0;  
 }
 
 private function getTotalExpense($startDate, $endDate)
@@ -69,13 +69,13 @@ private function getTotalExpense($startDate, $endDate)
     $query->bindValue(':end_date', $endDate, \PDO::PARAM_STR);
     $query->execute();
 
-    return $query->fetch(\PDO::FETCH_ASSOC)['total_expense'] ?? 0;  // Dodanie \ przed PDO
+    return $query->fetch(\PDO::FETCH_ASSOC)['total_expense'] ?? 0;  
 }
 
 public function getBalanceData()
 {
-    $startDate = date('Y-m-01'); // Początek bieżącego miesiąca
-    $endDate = date('Y-m-t'); // Koniec bieżącego miesiąca
+    $startDate = date('Y-m-01'); 
+    $endDate = date('Y-m-t'); 
 
     $totalIncome = $this->getTotalIncome($startDate, $endDate);
     $totalExpense = $this->getTotalExpense($startDate, $endDate);
@@ -87,5 +87,100 @@ public function getBalanceData()
         'balance' => $balance
     ];
 }
+
+public function getIncomeDetails($startDate, $endDate)
+{
+    $sql = 'SELECT 
+                incomes.id,
+                incomes.date_of_income, 
+                incomes.amount, 
+                incomes_category_assigned_to_users.name AS category, 
+                incomes.income_comment AS comment
+            FROM incomes
+            JOIN incomes_category_assigned_to_users 
+                ON incomes.income_category_assigned_to_user_id = incomes_category_assigned_to_users.id
+            WHERE incomes.user_id = :user_id 
+              AND incomes.date_of_income BETWEEN :start_date AND :end_date
+            ORDER BY incomes.date_of_income DESC';
+    $query = $this->db->prepare($sql);
+    $query->bindValue(':user_id', $this->userId, \PDO::PARAM_INT);
+    $query->bindValue(':start_date', $startDate, \PDO::PARAM_STR);
+    $query->bindValue(':end_date', $endDate, \PDO::PARAM_STR);
+    $query->execute();
+
+    return $query->fetchAll(\PDO::FETCH_ASSOC);  
+}
+
+public function getExpenseDetails($startDate, $endDate)
+{
+    $sql = 'SELECT 
+                expenses.id,
+                expenses.date_of_expense, 
+                expenses.amount, 
+                expenses_category_assigned_to_users.name AS category, 
+                payment_methods_assigned_to_users.name AS payment_method, 
+                expenses.expense_comment AS comment
+            FROM expenses
+            JOIN expenses_category_assigned_to_users 
+                ON expenses.expense_category_assigned_to_user_id = expenses_category_assigned_to_users.id
+            JOIN payment_methods_assigned_to_users 
+                ON expenses.payment_method_assigned_to_user_id = payment_methods_assigned_to_users.id
+            WHERE expenses.user_id = :user_id 
+              AND expenses.date_of_expense BETWEEN :start_date AND :end_date
+            ORDER BY expenses.date_of_expense DESC';
+    
+    $query = $this->db->prepare($sql);
+    $query->bindValue(':user_id', $this->userId, \PDO::PARAM_INT);
+    $query->bindValue(':start_date', $startDate, \PDO::PARAM_STR);
+    $query->bindValue(':end_date', $endDate, \PDO::PARAM_STR);
+    $query->execute();
+
+    return $query->fetchAll(\PDO::FETCH_ASSOC);  
+}
+
+public function getDetails($period, $startDate = '', $endDate = '')
+{
+    // Ustal okres, jak w metodzie getBalance
+    $this->setPeriodDates($period, $startDate, $endDate);
+
+    $incomes = $this->getIncomeDetails($startDate, $endDate);
+    $expenses = $this->getExpenseDetails($startDate, $endDate);
+
+    return [
+        'incomes' => $incomes,
+        'expenses' => $expenses,
+    ];
+}
+
+private function setPeriodDates(&$period, &$startDate, &$endDate)
+{
+    switch ($period) {
+        case 'current_month':
+            $startDate = date('Y-m-01');
+            $endDate = date('Y-m-t');
+            break;
+        case 'previous_month':
+            $startDate = date('Y-m-01', strtotime('first day of last month'));
+            $endDate = date('Y-m-t', strtotime('last day of last month'));
+            break;
+        case 'current_year':
+            $startDate = date('Y-01-01');
+            $endDate = date('Y-12-31');
+            break;
+        case 'custom':
+            if (empty($startDate) || empty($endDate)) {
+                throw new \Exception('Invalid custom date range.');
+            }
+            // Dodajemy sprawdzenie poprawności daty
+            if (!strtotime($startDate) || !strtotime($endDate)) {
+                throw new \Exception('Invalid custom dates provided.');
+            }
+            break;
+        default:
+            throw new \Exception('Invalid period specified.');
+    }
+}
+
+
 
 }

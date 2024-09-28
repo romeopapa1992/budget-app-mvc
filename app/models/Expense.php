@@ -15,7 +15,6 @@ class Expense
 
     public function addExpense($userId, $amount, $dateOfExpense, $category, $paymentMethod, $comment)
 {
-    // Pobranie nazwy kategorii z tabeli expenses_category_default
     $sql = 'SELECT name FROM expenses_category_default WHERE id = :category_id';
     $query = $this->db->prepare($sql);
     $query->bindValue(':category_id', $category, PDO::PARAM_INT);
@@ -23,12 +22,11 @@ class Expense
     $categoryData = $query->fetch(PDO::FETCH_ASSOC);
 
     if (!$categoryData) {
-        return false; // Błąd, jeśli kategoria nie istnieje
+        return false; 
     }
 
     $categoryName = $categoryData['name'];
 
-    // Sprawdzenie, czy kategoria jest przypisana do użytkownika
     $sql = 'SELECT id FROM expenses_category_assigned_to_users WHERE user_id = :user_id AND name = :category_name';
     $query = $this->db->prepare($sql);
     $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
@@ -37,7 +35,6 @@ class Expense
     $assignedCategoryData = $query->fetch(PDO::FETCH_ASSOC);
 
     if (!$assignedCategoryData) {
-        // Przypisanie kategorii do użytkownika
         $sql = 'INSERT INTO expenses_category_assigned_to_users (user_id, name) VALUES (:user_id, :category_name)';
         $query = $this->db->prepare($sql);
         $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
@@ -48,7 +45,6 @@ class Expense
         $expenseCategoryAssignedToUserId = $assignedCategoryData['id'];
     }
 
-    // Przypisanie metody płatności (bez zmian)
     $sql = 'SELECT id FROM payment_methods_assigned_to_users WHERE user_id = :user_id AND name = :payment_method';
     $query = $this->db->prepare($sql);
     $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
@@ -67,7 +63,6 @@ class Expense
         $paymentMethodAssignedToUserId = $assignedPaymentMethodData['id'];
     }
 
-    // Dodanie wydatku do tabeli expenses
     $sql = 'INSERT INTO expenses (user_id, expense_category_assigned_to_user_id, payment_method_assigned_to_user_id, amount, date_of_expense, expense_comment) 
             VALUES (:user_id, :expense_category_assigned_to_user_id, :payment_method_assigned_to_user_id, :amount, :date_of_expense, :expense_comment)';
     $query = $this->db->prepare($sql);
@@ -79,8 +74,6 @@ class Expense
     $query->bindValue(':expense_comment', $comment, PDO::PARAM_STR);
     return $query->execute();
 }
-
-
         public function addExpenseCategory($userId, $categoryName)
     {
         $sql = 'SELECT id FROM expenses_category_default WHERE name = :name';
@@ -92,7 +85,6 @@ class Expense
         if ($existingCategory) {
             return false; 
         } else {
-        // Dodajemy kategorię, jeśli jej nie ma
         $sql = 'INSERT INTO expenses_category_default (name) VALUES (:name)';
         $query = $this->db->prepare($sql);
         $query->bindValue(':name', $categoryName, PDO::PARAM_STR);
@@ -107,7 +99,6 @@ class Expense
         $query->bindValue(':id', $categoryId, PDO::PARAM_INT);
         return $query->execute();
     }
-
 
         public function getExpenseCategories()
     {

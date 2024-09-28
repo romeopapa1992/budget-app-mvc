@@ -88,6 +88,10 @@ if (isset($_GET['action'])) {
         case 'addIncomeCategory':
             $incomeController->addIncomeCategory();
             break;
+        
+        case 'getDetails':
+            $balanceController->getDetails();
+            break;
 
         case 'removeIncomeCategory':
             $incomeController->removeIncomeCategory();

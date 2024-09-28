@@ -40,7 +40,7 @@
       <form class="p-3 mx-2" id="balance-form" action="/budget-app-mvc/public/index.php?action=balance" method="post">
         <h1 class="h3 mb-3 fw-bold">View your balance</h1>
         <div class="form-floating mb-3 my-2">
-          <select id="period" class="form-select" aria-label="Balance period">
+          <select id="period" name="period" class="form-select" aria-label="Balance period">
             <option value="current_month">Current Month</option>
             <option value="previous_month">Previous Month</option>
             <option value="current_year">Current Year</option>
@@ -50,10 +50,10 @@
         </div>
         <div class="d-none mb-3" id="custom-date-range">
           <label for="startDate">Start Date:</label>
-          <input type="date" class="form-control" id="startDate">
+          <input type="date" class="form-control" id="startDate" name="start_date">
           <p class="error-text" id="startDateError">Select start date for custom period.</p>
           <label for="endDate">End Date:</label>
-          <input type="date" class="form-control" id="endDate">
+          <input type="date" class="form-control" id="endDate" name="end_date">
           <p class="error-text" id="endDateError">Select end date for custom period.</p>
         </div>
         <div class="buttons d-flex justify-content-between">
@@ -66,7 +66,42 @@
         <p class="fw-bold" id="balance"></p>
         <p class="fw-bold" id="total-income"></p>
         <p class="fw-bold" id="total-expense"></p>
+        <div class="button-details">
+          <button class="btn btn-secondary btn-lg custom-btn py-2" id="details-button" type="button">View more details</button>
+        </div>
       </div>
+      
+      <div id="details-section" class="d-none">
+        <h2>Income Details</h2>
+        <table id="income-details" class="table table-striped">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Category</th>
+              <th>Comment</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>      
+    
+        <h2>Expense Details</h2>
+        <table id="expense-details" class="table table-striped">
+          <thead>
+            <tr>
+              <th>No.</th>
+              <th>Date</th>
+              <th>Amount</th>
+              <th>Category</th>
+              <th>Payment Method</th>
+              <th>Comment</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+    </div>
+    
     </main>
   </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

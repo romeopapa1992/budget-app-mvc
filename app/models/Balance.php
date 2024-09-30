@@ -138,9 +138,9 @@ public function getExpenseDetails($startDate, $endDate)
     return $query->fetchAll(\PDO::FETCH_ASSOC);  
 }
 
+
 public function getDetails($period, $startDate = '', $endDate = '')
 {
-    // Ustal okres, jak w metodzie getBalance
     $this->setPeriodDates($period, $startDate, $endDate);
 
     $incomes = $this->getIncomeDetails($startDate, $endDate);
@@ -152,7 +152,7 @@ public function getDetails($period, $startDate = '', $endDate = '')
     ];
 }
 
-private function setPeriodDates(&$period, &$startDate, &$endDate)
+public function setPeriodDates(&$period, &$startDate, &$endDate)
 {
     switch ($period) {
         case 'current_month':
@@ -181,6 +181,26 @@ private function setPeriodDates(&$period, &$startDate, &$endDate)
     }
 }
 
+public function getExpenseCategoriesForPeriod($startDate, $endDate)
+{
+    $sql = 'SELECT 
+                expenses_category_assigned_to_users.name AS category, 
+                SUM(expenses.amount) AS total_amount
+            FROM expenses
+            JOIN expenses_category_assigned_to_users 
+                ON expenses.expense_category_assigned_to_user_id = expenses_category_assigned_to_users.id
+            WHERE expenses.user_id = :user_id 
+              AND expenses.date_of_expense BETWEEN :start_date AND :end_date
+            GROUP BY expenses_category_assigned_to_users.name';
+
+    $query = $this->db->prepare($sql);
+    $query->bindValue(':user_id', $this->userId, \PDO::PARAM_INT);
+    $query->bindValue(':start_date', $startDate, \PDO::PARAM_STR);
+    $query->bindValue(':end_date', $endDate, \PDO::PARAM_STR);
+    $query->execute();
+
+    return $query->fetchAll(\PDO::FETCH_ASSOC);  
+}
 
 
 }

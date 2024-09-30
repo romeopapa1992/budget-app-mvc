@@ -52,7 +52,6 @@ class UserController
             return;
         }
 
-        // Hashowanie hasła i tworzenie użytkownika
         $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
         if ($this->userModel->createUser($name, $surname, $email, $hashed_password)) {

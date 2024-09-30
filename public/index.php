@@ -108,6 +108,10 @@ if (isset($_GET['action'])) {
         case 'updateUser':
             $userController->updateUser();
             break;
+        
+        case 'getExpenseCategoryData':
+            $balanceController->getExpenseCategoryData();
+             break;
 
         case 'deleteUser':
             $userController->deleteUser();

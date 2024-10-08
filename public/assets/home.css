@@ -1,76 +1,177 @@
 body {
-    background-image: url("../resources/image-budget.png"); 
-    background-size: 120% 100%;
+  background-image: url("../resources/Budget-Planning.jpg"); 
+  background-size: cover; 
+  background-position: center;
+  color: whitesmoke;
 }
 
 .inner, 
 main {
-    background: linear-gradient(300deg, #055508, #f1f9f2, #72ef87);
-    background-size: 180% 180%;
-    animation: gradient-animation 18s ease infinite;
-    border-radius: 0.75rem;
-  }
-  
-  @keyframes gradient-animation {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-  
- .custom-btn {
-    background-color: black;
-    color: white; 
-    margin-right: 10px;
-  }
+  background-image: url("../resources/hand.webp");
+  background-size: cover;
+  border-radius: 0.75rem;
+}
+
+.custom-btn {
+  align-items: center; 
+  background-color: black;
+  color: white; 
+  margin-right: 10px;
+}
+
+.custom-btn-nav {
+  display: inline-flex;
+  align-items: center; 
+  background-color: black;
+  color: white; 
+  margin-right: 10px;
+}
 
 
-  .form-control:focus,
-  .form-select:focus {
-    border-color: rgb(146, 136, 136); 
-    box-shadow: 0 0 0 0.25rem rgba(135, 136, 133, 0.25); 
-  }
+.form-control:focus,
+.form-select:focus {
+  border-color: rgb(146, 136, 136); 
+  box-shadow: 0 0 0 0.25rem rgba(135, 136, 133, 0.25); 
+}
 
 .buttons button {
-  width: 40%;
+width: 40%;
+}
+
+.navbar-toggler {
+  background-color: rgba(169, 169, 169, 0.551);
+}
+
+label{
+color: black;
 }
 
 .error-text {
-  display: none;
-	color: hsl(0, 100%, 74%);
-	text-align: right;
-	margin-top: 10px;
-	font-size: .8rem;
-	font-style: italic;
-	font-weight: 500;
+display: none;
+color: hsl(0, 100%, 74%);
+text-align: right;
+margin-top: 10px;
+font-size: .8rem;
+font-style: italic;
+font-weight: 500;
 }
 
 input.error {
-	border: 2px solid hsl(0, 100%, 74%); 
+border: 2px solid hsl(0, 100%, 74%); 
 }
 
 .error-icon {
-	position: absolute;
-	top: 0;
-	right: 20px;
-	top: 28%;
+position: absolute;
+top: 0;
+right: 20px;
+top: 28%;
+}
+
+.home-icon,
+.register-icon,
+.login-icon,
+.balance-icon,
+.logout-icon,
+.settings-icon,
+.expense-icon,
+.income-icon {
+width: 20px; 
+height: 20px; 
+margin-right: 10px; 
+filter: invert(100%) brightness(200%);
+vertical-align: middle;  
+}
+
+.modal-title,
+.modal-body {
+color: black;
 }
 
 input.error ~ img.error-icon,
-input.error ~ p.error-text {
-	display: block;
-  }
 
-.error-text, img {
-    display: none;
+input.error ~ p.error-text {
+display: block;
+}
+
+.error-text, img.error-icon {
+  display: none;
 }
 
 .button-details {
-  display: flex;
-  justify-content: center;
+display: flex;
+justify-content: center;
+}
+
+.income-data, .expense-data {
+background-image: url("../resources/hand.webp"); 
+border-radius: 0.5rem;
+padding: 20px;
+margin: 20px;
+}
+
+.details-section .row {
+  flex-wrap: wrap;
+}
+
+.expense-chart {
+  width: 40%; 
+  background-image: url("../resources/hand.webp"); 
+  border-radius: 0.5rem;
+  padding: 20px;
+  margin: 0 auto; 
+}
+
+.custom-date-range label,
+.edit-form label {
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .income-data, .expense-data {
+    margin: 0 0 20px 0; 
+    width: 100%; 
+  }
+
+  .expense-chart {
+    width: 100%;
+  }
+
+  .inner, 
+  main {
+    width: 90%; 
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    padding: 1rem;
+  }
+
+  p.lead {
+    font-size: 1rem;
+  }
+
+  .custom-btn {
+    width: 100%; 
+    margin-bottom: 15px; 
+  }
+
+  .home-icon, 
+  .register-icon, 
+  .login-icon, 
+  .balance-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+}
+
+@media (min-width: 768px) {
+  .income-data, .expense-data {
+    display: inline-block;
+    vertical-align: top;
+    width: 48%; 
+    margin: 1%; 
+  }
+
 }

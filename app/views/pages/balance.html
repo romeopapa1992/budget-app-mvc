@@ -12,24 +12,26 @@
   <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
     <nav class="navbar navbar-expand-lg navbar-light bg-none mb-auto">
       <div class="container-fluid">
-        <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php">Home</a>
+        <a class="btn btn-lg btn-secondary custom-btn-nav" href="/budget-app-mvc/public/index.php">
+          <img src="/budget-app-mvc/public/resources/house.svg" class="home-icon" alt="home icon">Home</a>
         <button id="navbar-toggler" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <div class="navbar-nav ms-auto">
-            <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/App/views/pages/incomes.html">Incomes</a>
-            <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/App/views/pages/expenses.html">Expenses</a>
-            <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php?action=logout">Log out</a>
-            
+            <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/App/views/pages/incomes.html">
+              <img src="/budget-app-mvc/public/resources/income.svg" class="income-icon" alt="income icon">Incomes</a>
+            <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/App/views/pages/expenses.html">
+              <img src="/budget-app-mvc/public/resources/expense.svg" class="expense-icon" alt="expense icon">Expenses</a>
+            <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php?action=logout">
+              <img src="/budget-app-mvc/public/resources/logout.svg" class="logout-icon" alt="logout icon">Log out</a>
             <div class="btn-group">
               <button class="btn btn-lg btn-secondary custom-btn dropdown-toggle" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                Settings
-              </button>
+                <img src="/budget-app-mvc/public/resources/settings.svg" class="settings-icon" alt="settings icon">Settings </button>
               <ul class="dropdown-menu" aria-labelledby="settingsDropdown">
                 <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=userSettings">User Settings</a></li>
-                <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=expenseSettings">Expense Settings</a></li>
-                <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=incomeSettings">Income Settings</a></li>
+                <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=expenseSettings">Expense Category</a></li>
+                <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=incomeSettings">Income Category</a></li>
               </ul>
             </div>
           </div>
@@ -48,7 +50,7 @@
           </select>
           <label for="period">Select period</label>
         </div>
-        <div class="d-none mb-3" id="custom-date-range">
+        <div class="custom-date-range d-none mb-3" id="custom-date-range">
           <label for="startDate">Start Date:</label>
           <input type="date" class="form-control" id="startDate" name="start_date">
           <p class="error-text" id="startDateError">Select start date for custom period.</p>
@@ -70,46 +72,55 @@
           <button class="btn btn-secondary btn-lg custom-btn py-2" id="details-button" type="button">View more details</button>
         </div>
       </div>
-      
-      <div id="details-section" class="d-none">
-        <h2>Income Details</h2>
-        <table id="income-details" class="table table-striped">
-          <thead>
-            <tr>
-              <th>No.</th>
-              <th>Date</th>
-              <th>Amount</th>
-              <th>Category</th>
-              <th>Comment</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>      
-    
-        <h2>Expense Details</h2>
-        <table id="expense-details" class="table table-striped">
-          <thead>
-            <tr>
-              <th>No.</th>
-              <th>Date</th>
-              <th>Amount</th>
-              <th>Category</th>
-              <th>Payment Method</th>
-              <th>Comment</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-        <h2>Expense Breakdown</h2>
-        <canvas id="expenseChart" width="400" height="400"></canvas>
-    </div>
-    
     </main>
+
+    <div class="details-section d-none mt-5" id="details-section">
+      <div class="row">
+        <div class="income-data col-12 col-md-6 mb-4">
+          <h2>Income Details</h2>
+          <table id="income-details" class="table table-striped">
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Category</th>
+                <th>Comment</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+    
+        <div class="expense-data col-12 col-md-6 mb-4">
+          <h2>Expense Details</h2>
+          <table id="expense-details" class="table table-striped">
+            <thead>
+              <tr>
+                <th>No.</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Category</th>
+                <th>Payment Method</th>
+                <th>Comment</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    
+      <div class="expense-chart mt-5">
+          <h2 class="text-center">Expense Breakdown</h2>
+          <div class="d-flex justify-content-center">
+            <canvas id="expenseChart" width="400" height="400"></canvas>
+          </div>
+      </div> 
+    </div>
   </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <script src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="/budget-app-mvc/public/assets/js/script.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </body>
-</html>
+</html> 

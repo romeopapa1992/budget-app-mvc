@@ -26,7 +26,6 @@ class UserController
 
         $errors = [];
 
-        // Walidacja danych wejściowych
         if (empty($name)) {
             $errors['name'] = 'First name cannot be empty.';
         }
@@ -80,7 +79,7 @@ class UserController
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['email'] = $user['email'];
 
-            echo json_encode(['status' => 'success', 'message' => 'Successfully logged in']);
+            echo json_encode(['status' => 'success', 'message' => 'Login successful!']);
             return;
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Wrong email or password!']);
@@ -100,7 +99,6 @@ public function editUser()
 
         $errors = [];
 
-        // Walidacja opcjonalna dla każdego pola
         if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors['email'] = 'Invalid email format.';
         }
@@ -114,7 +112,6 @@ public function editUser()
             return;
         }
 
-        // Aktualizacja tylko tych danych, które zostały przesłane
         if ($name || $surname || $email) {
             $this->userModel->updateUser($userId, $name, $surname, $email);
         }

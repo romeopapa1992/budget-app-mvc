@@ -13,14 +13,14 @@ $(document).ready(function() {
     });
 
     function handleErrors(errors) {
-        $('.error-text').hide();
-        $('input').removeClass('error');
-
+        $('.error-text').hide();  
+        $('input').removeClass('error');  
+    
         for (let key in errors) {
-            const input = $('#${key.charAt(0).toLowerCase() + key.slice(1)}');
-            const errorElement = input.siblings('.error-text');
-            errorElement.text(errors[key]).show();
-            input.addClass('error');
+            const input = $(`#floating${capitalizeFirstLetter(key)}`);  
+            const errorElement = input.siblings('.error-text');  
+            errorElement.text(errors[key]).show();  
+            input.addClass('error');  
         }
     }
 
@@ -93,14 +93,20 @@ $(document).ready(function() {
                         window.location.href = '/budget-app-mvc/public/index.php?action=signin';
                     }
                 } else if (response.status === 'error') {
-                    alert(response.message || 'Email already exists.');
-                    form[0].reset(); 
+                    if (response.errors) {
+                        handleErrors(response.errors);
+                    } else {
+                        alert(response.message || 'An error occurred.');
+                    }
                 } else {
                     console.log('Unexpected response: ', response);
                 }
-            }            
+            }
         });
-    }
+    } 
+
+        
+
     
   
     $('#editOption').change(function() {
@@ -218,15 +224,48 @@ $(document).ready(function() {
     }   
     
     $('#period').on('change', function() {
+        $('#balance-info').addClass('d-none');
+        $('#details-section').addClass('d-none');
+    
         if ($(this).val() === 'custom') {
             $('#custom-date-range').removeClass('d-none');
         } else {
             $('#custom-date-range').addClass('d-none');
+            $('#startDate').val('');
+            $('#endDate').val('');
             $('#startDateError').addClass('d-none');
             $('#endDateError').addClass('d-none');
         }
     });
     
+    
+    $('#startDate, #endDate, #amount, #date').on('change', function() {
+        const startDate = $('#startDate').val();
+        const endDate = $('#endDate').val();
+        const amount = $('#amount').val();
+        const date = $('#date').val();
+        
+        if (startDate) {
+            $('#startDateError').addClass('d-none'); 
+            $('#startDate').removeClass('error');
+        }
+
+        if (endDate) {
+            $('#endDateError').addClass('d-none');
+            $('#endDate').removeClass('error');  
+        }
+
+        if (amount) {
+            $('#amountError').addClass('d-none');
+            $('#amount').removeClass('error');  
+        }
+
+        if (date) {
+            $('#dateError').addClass('d-none'); 
+            $('#date').removeClass('error');  
+        }
+    });
+
     $('#balance-form').on('submit', function(e) {
         e.preventDefault();
     
@@ -239,15 +278,11 @@ $(document).ready(function() {
             if (!startDate) {
                 $('#startDateError').removeClass('d-none');
                 hasError = true;
-            } else {
-                $('#startDateError').addClass('d-none');
             }
     
             if (!endDate) {
                 $('#endDateError').removeClass('d-none');
                 hasError = true;
-            } else {
-                $('#endDateError').addClass('d-none');
             }
     
             if (hasError) {
@@ -279,18 +314,19 @@ $(document).ready(function() {
             }
         });
     });
+
     
     $('#clear-button').on('click', function() {
         $('#balance-form')[0].reset();
         $('#balance-info').addClass('d-none');
     });
-    
-    $('#clear-income-button').on('click', function() {
-        $('#income-form')[0].reset();
+
+    $('#clear-income-button').click(function() {
+        $('#addIncomeForm')[0].reset(); 
     });
     
     $('#clear-expense-button').on('click', function() {
-        $('#expense-form')[0].reset();
+        $('#addExpenseForm')[0].reset();
     });
     
     $('#deleteAccountBtn').on('click', function() {
@@ -372,12 +408,18 @@ $(document).ready(function() {
         });
     });    
 
+    let expenseChart;
+
 function drawExpenseChart(expenseData) {
     const ctx = document.getElementById('expenseChart').getContext('2d');
     const labels = expenseData.map(item => item.category);
     const data = expenseData.map(item => parseFloat(item.total_amount));
 
-    const expenseChart = new Chart(ctx, {
+    if (expenseChart) {
+        expenseChart.destroy();
+    }
+
+    expenseChart = new Chart(ctx, {
         type: 'pie',
         data: {
             labels: labels,
@@ -394,6 +436,9 @@ function drawExpenseChart(expenseData) {
             plugins: {
                 legend: {
                     position: 'top',
+                    labels: {
+                        color: 'white',
+                    },
                 },
                 tooltip: {
                     callbacks: {
@@ -423,15 +468,15 @@ $('#details-button').click(function() {
             incomeDetails.empty();
             if (data.incomes.length) {
                 data.incomes.forEach((income, index) => {
-                    incomeDetails.append(`
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td>${income.date_of_income}</td>
-                            <td>${income.amount}</td>
-                            <td>${income.category}</td>
-                            <td>${income.comment}</td>
-                        </tr>
-                    `);
+                    incomeDetails.append(
+                        `<tr>
+                        <td>${index + 1}</td>
+                        <td>${income.date_of_income}</td>
+                        <td>${income.amount}</td>
+                        <td>${income.category}</td>
+                        <td>${income.comment}</td>
+                    </tr>`
+                    );
                 });
             } else {
                 incomeDetails.append('<tr><td colspan="5">No incomes for the selected period.</td></tr>');
@@ -441,16 +486,16 @@ $('#details-button').click(function() {
             expenseDetails.empty();
             if (data.expenses.length) {
                 data.expenses.forEach((expense, index) => {
-                    expenseDetails.append(`
-                        <tr>
-                            <td>${index + 1}</td>
-                            <td>${expense.date_of_expense}</td>
-                            <td>${expense.amount}</td>
-                            <td>${expense.category}</td>
-                            <td>${expense.payment_method}</td>
-                            <td>${expense.comment}</td>
-                        </tr>
-                    `);
+                    expenseDetails.append(
+                        `<tr>
+                        <td>${index + 1}</td>
+                        <td>${expense.date_of_expense}</td>
+                        <td>${expense.amount}</td>
+                        <td>${expense.category}</td>
+                        <td>${expense.payment_method}</td>
+                        <td>${expense.comment}</td>
+                    </tr>`
+                    );
                 });
             } else {
                 expenseDetails.append('<tr><td colspan="6">No expenses for the selected period.</td></tr>');
@@ -465,9 +510,9 @@ $('#details-button').click(function() {
                 success: function(categoryResponse) {
                     let categoryData = JSON.parse(categoryResponse);
                     if (categoryData.length) {
-                        drawExpenseChart(categoryData);
+                        drawExpenseChart(categoryData);  
                     } else {
-                        console.log('Brak danych do wykresu.');
+                        $('#expenseChart').replaceWith('<p class="text-center">No expense data available for the selected period.</p>');
                     }
                 },
                 error: function() {
@@ -482,24 +527,15 @@ $('#details-button').click(function() {
     });
 });
 
+$('#clear-button').click(function() {
+    $('#balance-form')[0].reset();
+    $('#custom-date-range').addClass('d-none');
+    $('#balance-info').addClass('d-none');
+    $('#details-section').addClass('d-none');
 
-    $('#period').on('change', function() {
-        if ($(this).val() === 'custom') {
-            $('#custom-date-range').removeClass('d-none');
-        } else {
-            $('#custom-date-range').addClass('d-none');
-        }
-    });
-
-    $('#balance-form').submit(function(e) {
-        e.preventDefault();
-    });
-
-    $('#clear-button').click(function() {
-        $('#balance-form')[0].reset();
-        $('#custom-date-range').addClass('d-none');
-        $('#balance-info').addClass('d-none');
-        $('#details-section').addClass('d-none');
-    });
+    if (expenseChart) {
+        expenseChart.destroy();
+    }
+});
 
 });

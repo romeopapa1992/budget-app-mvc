@@ -171,7 +171,6 @@ public function setPeriodDates(&$period, &$startDate, &$endDate)
             if (empty($startDate) || empty($endDate)) {
                 throw new \Exception('Invalid custom date range.');
             }
-            // Dodajemy sprawdzenie poprawności daty
             if (!strtotime($startDate) || !strtotime($endDate)) {
                 throw new \Exception('Invalid custom dates provided.');
             }
@@ -203,4 +202,4 @@ public function getExpenseCategoriesForPeriod($startDate, $endDate)
 }
 
 
-}
+} 

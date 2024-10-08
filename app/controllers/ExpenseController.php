@@ -15,23 +15,36 @@ public function __construct($db)
     }
 
     public function addExpense()
-    {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            session_start();
-            $userId = $_SESSION['user_id'];
-            $amount = trim($_POST['amount']);
-            $dateOfExpense = trim($_POST['date']);
-            $category = trim($_POST['category']);
-            $paymentMethod = trim($_POST['payment_method']);
-            $comment = ucfirst(strtolower(trim($_POST['comment'])));
+{
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        
+        $userId = $_SESSION['user_id'];
+        $amount = trim($_POST['amount']);
+        $dateOfExpense = trim($_POST['date']);
+        $category = trim($_POST['category']);
+        $paymentMethod = trim($_POST['payment_method']);
+        $comment = ucfirst(strtolower(trim($_POST['comment'])));
 
-            if ($this->expenseModel->addExpense($userId, $amount, $dateOfExpense, $category, $paymentMethod, $comment)) {
-                echo json_encode(['status' => 'success', 'message' => 'Expense has been added successfully!']);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'An error occurred while adding the expense.']);
-            }
+        $errors = [];
+
+        if (empty($amount)) {
+            $errors['amount'] = 'Amount cannot be empty.';
+        } elseif (!is_numeric($amount)) {
+            $errors['amount'] = 'Amount must be a valid number.';
+        }
+
+        if (!empty($errors)) {
+            echo json_encode(['status' => 'error', 'errors' => $errors]);
+            return;
+        }
+
+        if ($this->expenseModel->addExpense($userId, $amount, $dateOfExpense, $category, $paymentMethod, $comment)) {
+            echo json_encode(['status' => 'success', 'message' => 'Expense has been added successfully!']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'An error occurred while adding the expense.']);
         }
     }
+}
 
     public function addExpenseCategory()
     {

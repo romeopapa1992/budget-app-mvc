@@ -14,24 +14,27 @@
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
       <nav class="navbar navbar-expand-lg navbar-light bg-none mb-auto">
         <div class="container-fluid">
-          <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php">Home</a>
+          <a class="btn btn-lg btn-secondary custom-btn-nav" href="/budget-app-mvc/public/index.php">
+            <img src="/budget-app-mvc/public/resources/house.svg" class="home-icon" alt="home icon">Home</a>
           <button id="navbar-toggler" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav"
             aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarNav">
             <div class="navbar-nav ms-auto">
-              <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/App/views/pages/expenses.html">Expenses</a>
-              <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/App/views/pages/balance.html">Balance</a>
-              <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php?action=logout">Log out</a>
+              <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/App/views/pages/expenses.html">
+                <img src="/budget-app-mvc/public/resources/expense.svg" class="expense-icon" alt="expense icon">Expenses</a>
+              <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php?action=balance">
+                <img src="/budget-app-mvc/public/resources/balance.svg" class="balance-icon" alt="balance icon">Balance</a>
+                <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php?action=logout">
+                  <img src="/budget-app-mvc/public/resources/logout.svg" class="logout-icon" alt="logout icon">Log out</a>
               <div class="btn-group">
                 <button class="btn btn-lg btn-secondary custom-btn dropdown-toggle" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                  Settings
-                </button>
+                  <img src="/budget-app-mvc/public/resources/settings.svg" class="settings-icon" alt="settings icon">Settings </button>
                 <ul class="dropdown-menu" aria-labelledby="settingsDropdown">
                   <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=userSettings">User Settings</a></li>
-                  <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=expenseSettings">Expense Settings</a></li>
-                  <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=incomeSettings">Income Settings</a></li>
+                  <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=expenseSettings">Expense Category</a></li>
+                  <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=incomeSettings">Income Category</a></li>
                 </ul>
               </div>
             </div>
@@ -44,14 +47,14 @@
           <h1 class="h3 mb-3 fw-bold">Enter incomes data</h1>
       
           <div class="form-floating my-2">
-            <input type="text" class="form-control" id="amount" placeholder="$$$" name="amount">
-            <label for="amount">Amount in PLN</label>
-            <p class="error-text" id="amountError">Amount cannot be empty.</p>
+            <input type="text" class="form-control" id="floatingAmount" placeholder="$$$" name="amount">
+            <label for="floatingAmount">Amount in PLN</label>
+            <p class="error-text" id="floatingAmountError">Amount cannot be empty.</p>
           </div>
           <div class="form-floating my-2">
-            <input type="date" class="form-control" id="date" name="date">
-            <label for="date">Date</label>
-            <p class="error-text" id="dateError">Select the date.</p>
+            <input type="date" class="form-control" id="floatingDate" name="date">
+            <label for="floatingDate">Date</label>
+            <p class="error-text" id="floatingDateError">Select the date.</p>
           </div>
           <div class="form-floating my-2">
             <select class="form-control" id="incomeCategorySelect" name="category">             
@@ -63,7 +66,6 @@
             <textarea class="form-control" placeholder="Leave a comment here" id="comment" name="comment"></textarea>
             <label for="comment">Comment</label>
           </div>
-      
           <div class="buttons d-flex justify-content-between ">
            <button class="btn btn-secondary btn-lg custom-btn py-2" type="submit">Add</button>
            <button class="btn btn-secondary btn-lg custom-btn py-2" type="button" id="clear-income-button">Clear</button> 

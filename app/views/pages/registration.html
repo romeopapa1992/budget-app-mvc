@@ -12,7 +12,8 @@
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
     <nav class="navbar navbar-expand-lg navbar-light bg-none">
         <div class="container-fluid">
-          <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php">Home</a>
+          <a class="btn btn-lg btn-secondary custom-btn-nav" href="/budget-app-mvc/public/index.php">
+            <img src="/budget-app-mvc/public/resources/house.svg" class="home-icon" alt="home icon">Home</a>
         </div>
       </nav>
 <main class="form-signin m-auto">
@@ -33,13 +34,13 @@
   <div class="form-floating my-2">
       <input type="email" class="form-control" id="floatingEmail" name="email" placeholder="name@example.com">
       <label for="floatingEmail">Email address</label>
-      <p class="error-text">Looks like this is not an email.</p>
+      <p class="error-text">Email cannot be empty.</p>
       <img src="/budget-app-mvc/public/resources/icon-error.svg" class="error-icon" alt="icon error">
   </div>
   <div class="form-floating my-2">
       <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Password">
       <label for="floatingPassword">Password</label>
-      <p class="error-text">Passwords must meet complexity requirements.</p>
+      <p class="error-text">Password cannot be empty.</p>
       <img src="/budget-app-mvc/public/resources/icon-error.svg" class="error-icon" alt="icon error">
   </div>
 

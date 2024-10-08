@@ -28,11 +28,13 @@ class IncomeController
         $category = trim($_POST['category']);
         $comment = ucfirst(strtolower(trim($_POST['comment'])));
 
-        // Backend validation for empty fields
         $errors = [];
         if (empty($amount)) {
             $errors['amount'] = "Amount cannot be empty.";
+        } elseif (!is_numeric($amount)) {
+            $errors['amount'] = 'Amount must be a valid number.';
         }
+
         if (empty($dateOfIncome)) {
             $errors['date'] = "Date cannot be empty.";
         }
@@ -40,13 +42,11 @@ class IncomeController
             $errors['category'] = "Category cannot be empty.";
         }
 
-        // If there are validation errors, return them
         if (!empty($errors)) {
             echo json_encode(['status' => 'error', 'errors' => $errors]);
             exit;
         }
 
-        // Continue with database insert if no errors
         if ($this->incomeModel->addIncome($userId, $amount, $dateOfIncome, $category, $comment)) {
             echo json_encode(['status' => 'success', 'message' => 'Income has been added successfully!']);
         } else {

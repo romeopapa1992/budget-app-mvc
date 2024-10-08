@@ -56,7 +56,7 @@ class User
     }
 
     if (empty($updates)) {
-        return false; // Brak danych do aktualizacji
+        return false; 
     }
 
     $sql = 'UPDATE users SET ' . implode(', ', $updates) . ' WHERE id = :id';

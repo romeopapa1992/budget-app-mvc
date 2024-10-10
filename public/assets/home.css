@@ -82,6 +82,17 @@ filter: invert(100%) brightness(200%);
 vertical-align: middle;  
 }
 
+#deleteAccountBtn {
+  background-color: black; 
+  color: white;
+  border-color: white;
+}
+
+#deleteAccountBtn:hover {
+  background-color: rgb(151, 32, 32); /* Zmienia kolor na czerwony po najechaniu */
+  color: white;
+}
+
 .modal-title,
 .modal-body {
 color: black;

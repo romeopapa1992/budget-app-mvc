@@ -7,11 +7,13 @@ class HomeController {
         require_once '../App/views/pages/startPage.html';
     }
 
-    public function registration() {
+    public function showRegistrationForm()
+    {
         require_once '../App/views/pages/registration.html';
     }
 
-    public function signin() {
+    public function showSigninForm()
+    {
         require_once '../App/views/pages/signin.html';
     }
 
@@ -19,12 +21,29 @@ class HomeController {
         require_once '../App/views/pages/balance.html';
     }
 
-     public function expense() {
-        require_once '../App/views/pages/expense.html';
+    public function showExpensesForm()
+    {
+        require_once '../App/views/pages/expenses.html';
     }
 
-    public function income() {
+    public function showIncomeForm()
+    {
         require_once '../App/views/pages/income.html';
+    }
+
+    public function showExpenseSettingsForm()
+    {
+        require_once '../App/views/pages/expenseSettings.html';
+    }
+
+    public function showIncomeSettingsForm()
+    {
+        require_once '../App/views/pages/incomeSettings.html';
+    }
+
+    public function showUserSettingsForm()
+    {
+        require_once '../App/views/pages/userSettings.html';
     }
 
 }

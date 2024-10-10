@@ -9,42 +9,41 @@ class ExpenseController
 {
     private $expenseModel;
 
-public function __construct($db)
+    public function __construct($db)
     {
         $this->expenseModel = new Expense($db);
     }
 
     public function addExpense()
-{
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        
-        $userId = $_SESSION['user_id'];
-        $amount = trim($_POST['amount']);
-        $dateOfExpense = trim($_POST['date']);
-        $category = trim($_POST['category']);
-        $paymentMethod = trim($_POST['payment_method']);
-        $comment = ucfirst(strtolower(trim($_POST['comment'])));
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $userId = $_SESSION['user_id'];
+            $amount = trim($_POST['amount']);
+            $dateOfExpense = trim($_POST['date']);
+            $category = trim($_POST['category']);
+            $paymentMethod = trim($_POST['payment_method']);
+            $comment = ucfirst(strtolower(trim($_POST['comment'])));
 
-        $errors = [];
+            $errors = [];
 
-        if (empty($amount)) {
-            $errors['amount'] = 'Amount cannot be empty.';
-        } elseif (!is_numeric($amount)) {
-            $errors['amount'] = 'Amount must be a valid number.';
-        }
+            if (empty($amount)) {
+                $errors['amount'] = 'Amount cannot be empty.';
+            } elseif (!is_numeric($amount)) {
+                $errors['amount'] = 'Amount must be a valid number.';
+            }
 
-        if (!empty($errors)) {
-            echo json_encode(['status' => 'error', 'errors' => $errors]);
-            return;
-        }
+            if (!empty($errors)) {
+                echo json_encode(['status' => 'error', 'errors' => $errors]);
+                return;
+            }
 
-        if ($this->expenseModel->addExpense($userId, $amount, $dateOfExpense, $category, $paymentMethod, $comment)) {
-            echo json_encode(['status' => 'success', 'message' => 'Expense has been added successfully!']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'An error occurred while adding the expense.']);
+            if ($this->expenseModel->addExpense($userId, $amount, $dateOfExpense, $category, $paymentMethod, $comment)) {
+                echo json_encode(['status' => 'success', 'message' => 'Expense has been added successfully!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'An error occurred while adding the expense.']);
+            }
         }
     }
-}
 
     public function addExpenseCategory()
     {
@@ -61,35 +60,24 @@ public function __construct($db)
         }
     }
 
-public function removeExpenseCategory()
-{
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        session_start();
-        $userId = $_SESSION['user_id'];
-        $categoryId = $_POST['expenseCategorySelect'];
+    public function removeExpenseCategory()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            session_start();
+            $userId = $_SESSION['user_id'];
+            $categoryId = $_POST['expenseCategorySelect'];
 
-        if ($this->expenseModel->removeExpenseCategory($userId, $categoryId)) {
-            echo json_encode(['status' => 'success', 'message' => 'Category removed successfully!']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Failed to remove category.']);
+            if ($this->expenseModel->removeExpenseCategory($userId, $categoryId)) {
+                echo json_encode(['status' => 'success', 'message' => 'Category removed successfully!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Failed to remove category.']);
+            }
         }
     }
-}
 
-public function getExpenseCategories()
-{
-    $categories = $this->expenseModel->getExpenseCategories();
-    echo json_encode($categories);
-}
-
-    public function showExpensesForm()
+    public function getExpenseCategories()
     {
-        require_once '../App/views/pages/expenses.html';
+        $categories = $this->expenseModel->getExpenseCategories();
+        echo json_encode($categories);
     }
-
-    public function showExpenseSettingsForm()
-    {
-        require_once '../App/views/pages/expenseSettings.html';
-    }
-
-} 
+}

@@ -3,17 +3,15 @@
 require_once '../vendor/autoload.php';
 require_once '../App/Config/database.php';
 
-use App\Controllers\HomeController;
-use App\Controllers\UserController;
-use App\Controllers\IncomeController;
-use App\Controllers\ExpenseController;
-use App\Controllers\BalanceController; 
+use App\Controllers\{
+    HomeController, UserController, IncomeController, ExpenseController, BalanceController
+};
 
 $homeController = new HomeController();
 $userController = new UserController($db);
 $incomeController = new IncomeController($db);
-$expenseController = new ExpenseController($db); 
-$balanceController = new BalanceController($db); 
+$expenseController = new ExpenseController($db);
+$balanceController = new BalanceController($db);
 
 if (isset($_GET['action'])) {
     switch ($_GET['action']) {
@@ -21,7 +19,7 @@ if (isset($_GET['action'])) {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $userController->registration();
             } else {
-                $userController->showRegistrationForm();
+                $homeController->showRegistrationForm();
             }
             break;
 
@@ -29,44 +27,39 @@ if (isset($_GET['action'])) {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $userController->signin();
             } else {
-                $userController->showSigninForm();
+                $homeController->showSigninForm();
             }
             break;
 
         case 'income': 
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $incomeController->income();
+                $incomeController->addIncome();
             } else {
-                $incomeController->showIncomeForm();
+                $homeController->showIncomeForm();
             }
             break;
 
-        case 'expense':  
+        case 'expense':
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $expenseController->addExpense();
             } else {
-                $expenseController->showExpenseForm();
+                $homeController->showExpenseForm();
             }
             break;
 
         case 'balance':
-            if (session_status() == PHP_SESSION_NONE) {
-             session_start();
-            }
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            } 
             if (isset($_SESSION['user_id'])) {
-
-            $balanceController->showBalance();
+                $balanceController->showBalance();
             } else {
-            echo json_encode(['status' => 'error', 'message' => 'You should log in, if you want to review your balance.']);
+                echo json_encode(['status' => 'error', 'message' => 'You need to log in to access the page.']);
             }
-            break;
-
-        case 'editUser':
-            $userController->editUser();
             break;
 
         case 'expenseSettings':
-            $expenseController->showExpenseSettingsForm();
+            $homeController->showExpenseSettingsForm();
             break;
 
         case 'addExpenseCategory':
@@ -82,7 +75,7 @@ if (isset($_GET['action'])) {
             break;
 
         case 'incomeSettings':
-            $incomeController->showIncomeSettingsForm();
+            $homeController->showIncomeSettingsForm();
             break;
 
         case 'addIncomeCategory':
@@ -102,7 +95,7 @@ if (isset($_GET['action'])) {
             break;
         
         case 'userSettings':
-            $userController->showUserSettingsForm();
+            $homeController->showUserSettingsForm();
             break;
 
         case 'updateUser':
@@ -111,7 +104,7 @@ if (isset($_GET['action'])) {
         
         case 'getExpenseCategoryData':
             $balanceController->getExpenseCategoryData();
-             break;
+            break;
 
         case 'deleteUser':
             $userController->deleteUser();
@@ -120,11 +113,7 @@ if (isset($_GET['action'])) {
         case 'logout':  
             $userController->logout();
             break;
-
-        default:
-            $homeController->index();
-            break;
-    }
-} else {
+        }
+    } else {
     $homeController->index();
 }

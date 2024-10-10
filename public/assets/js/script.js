@@ -24,15 +24,15 @@ $(document).ready(function() {
         }
     }
 
+    $('input').on('input', function() {
+        const input = $(this);
+        const errorElement = input.siblings(".error-text");
+        hideError(input, errorElement);  
+    });
+
     function capitalizeFirstLetter(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
-
-    $('#floatingName, #floatingSurname, #floatingEmail, #floatingPassword, #signinEmail, #signinPassword').on('input', function() {
-        const input = $(this);
-        const errorElement = input.siblings('.error-text');
-        hideError(input, errorElement);
-    });
 
     function validateAndSubmitForm(form, isLoginForm = false) {
         const inputs = form.find("input");
@@ -76,6 +76,11 @@ $(document).ready(function() {
         errorElement.hide();
     }
 
+    function clearErrors() {
+        $('.error-text').hide();  
+        $('input, select').removeClass('error');  
+    }
+
     function submitForm(form, isLoginForm) {
         $.ajax({
             url: form.attr('action'),
@@ -98,16 +103,11 @@ $(document).ready(function() {
                     } else {
                         alert(response.message || 'An error occurred.');
                     }
-                } else {
-                    console.log('Unexpected response: ', response);
-                }
+                    form[0].reset();
+                } 
             }
         });
     } 
-
-        
-
-    
   
     $('#editOption').change(function() {
         var selectedOption = $(this).val();
@@ -176,52 +176,6 @@ $(document).ready(function() {
             }
         });
     });
-
-    
-    function validateAndSubmitExpenseForm(form) {
-        const amount = $('#amount').val().trim();
-        const date = $('#date').val().trim();
-        const category = $('#category').val().trim();
-        const paymentMethod = $('#payment_method').val().trim();
-        const comment = $('#comment').val().trim();
-        let hasError = false;
-    
-        if (amount === "" || isNaN(amount)) {
-            showError($('#amount'), $('#amountError'));
-            hasError = true;
-        }
-        if (date === "") {
-            showError($('#date'), $('#dateError'));
-            hasError = true;
-        }
-        if (category === "") {
-            showError($('#category'), $('#categoryError'));
-            hasError = true;
-        }
-        if (paymentMethod === "") {
-            showError($('#payment_method'), $('#paymentMethodError'));
-            hasError = true;
-        }
-    
-        if (!hasError) {
-            $.ajax({
-                url: '/budget-app-mvc/public/index.php?action=expense',
-                type: 'POST',
-                data: form.serialize(),
-                dataType: 'json',
-                success: function(response) {
-                    if (response.status === 'success') {
-                        handleSuccessResponse(form);
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function() {
-                    alert('An error occurred. Please try again.');
-                }
-            });
-        }
-    }   
     
     $('#period').on('change', function() {
         $('#balance-info').addClass('d-none');
@@ -237,7 +191,6 @@ $(document).ready(function() {
             $('#endDateError').addClass('d-none');
         }
     });
-    
     
     $('#startDate, #endDate, #amount, #date').on('change', function() {
         const startDate = $('#startDate').val();
@@ -315,18 +268,14 @@ $(document).ready(function() {
         });
     });
 
-    
-    $('#clear-button').on('click', function() {
-        $('#balance-form')[0].reset();
-        $('#balance-info').addClass('d-none');
-    });
-
     $('#clear-income-button').click(function() {
         $('#addIncomeForm')[0].reset(); 
+        clearErrors(); 
     });
-    
-    $('#clear-expense-button').on('click', function() {
-        $('#addExpenseForm')[0].reset();
+
+    $('#clear-expense-button').click(function() {
+        $('#addExpenseForm')[0].reset(); 
+        clearErrors(); 
     });
     
     $('#deleteAccountBtn').on('click', function() {
@@ -366,7 +315,6 @@ $(document).ready(function() {
     $('#removeIncomeCategoryBtn').click(function() {
         $('#removeIncomeCategoryModal').modal('show');
     });
-    
     
     $.ajax({
         url: '/budget-app-mvc/public/index.php?action=getExpenseCategories',
@@ -410,7 +358,7 @@ $(document).ready(function() {
 
     let expenseChart;
 
-function drawExpenseChart(expenseData) {
+    function drawExpenseChart(expenseData) {
     const ctx = document.getElementById('expenseChart').getContext('2d');
     const labels = expenseData.map(item => item.category);
     const data = expenseData.map(item => parseFloat(item.total_amount));

@@ -5,12 +5,6 @@ namespace App\Controllers;
 use App\Models\Income;
 use Core\View;
 
-
-namespace App\Controllers;
-
-use App\Models\Income;
-use Core\View;
-
 class IncomeController
 {
     private $incomeModel;
@@ -19,42 +13,44 @@ class IncomeController
     {
         $this->incomeModel = new Income($db);
     }
-    public function income()
-{
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $userId = $_SESSION['user_id'];
-        $amount = trim($_POST['amount']);
-        $dateOfIncome = trim($_POST['date']);
-        $category = trim($_POST['category']);
-        $comment = ucfirst(strtolower(trim($_POST['comment'])));
 
-        $errors = [];
-        if (empty($amount)) {
-            $errors['amount'] = "Amount cannot be empty.";
-        } elseif (!is_numeric($amount)) {
-            $errors['amount'] = 'Amount must be a valid number.';
-        }
+    public function addIncome()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $userId = $_SESSION['user_id'];
+            $amount = trim($_POST['amount']);
+            $dateOfIncome = trim($_POST['date']);
+            $category = trim($_POST['category']);
+            $comment = ucfirst(strtolower(trim($_POST['comment'])));
 
-        if (empty($dateOfIncome)) {
-            $errors['date'] = "Date cannot be empty.";
-        }
-        if (empty($category)) {
-            $errors['category'] = "Category cannot be empty.";
-        }
+            $errors = [];
 
-        if (!empty($errors)) {
-            echo json_encode(['status' => 'error', 'errors' => $errors]);
-            exit;
-        }
+            if (empty($amount)) {
+                $errors['amount'] = 'Amount cannot be empty.';
+            } elseif (!is_numeric($amount)) {
+                $errors['amount'] = 'Amount must be a valid number.';
+            }
 
-        if ($this->incomeModel->addIncome($userId, $amount, $dateOfIncome, $category, $comment)) {
-            echo json_encode(['status' => 'success', 'message' => 'Income has been added successfully!']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'An error occurred while adding the income.']);
+            if (empty($dateOfIncome)) {
+                $errors['date'] = 'Date cannot be empty.';
+            }
+
+            if (empty($category)) {
+                $errors['category'] = 'Category cannot be empty.';
+            }
+
+            if (!empty($errors)) {
+                echo json_encode(['status' => 'error', 'errors' => $errors]);
+                exit;
+            }
+
+            if ($this->incomeModel->addIncome($userId, $amount, $dateOfIncome, $category, $comment)) {
+                echo json_encode(['status' => 'success', 'message' => 'Income has been added successfully!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'An error occurred while adding the income.']);
+            }
         }
     }
-}
-
 
     public function addIncomeCategory()
     {
@@ -91,14 +87,4 @@ class IncomeController
         $categories = $this->incomeModel->getIncomeCategories();
         echo json_encode($categories);
     }
-
-    public function showIncomeForm()
-    {
-        require_once '../App/views/pages/income.html';
-    }
-
-    public function showIncomeSettingsForm()
-    {
-        require_once '../App/views/pages/incomeSettings.html';
-    }
-} 
+}

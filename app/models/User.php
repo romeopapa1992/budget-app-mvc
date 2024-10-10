@@ -43,37 +43,36 @@ class User
     }
 
     public function updateUser($userId, $name = null, $surname = null, $email = null)
-{
-    $updates = [];
-    if ($name) {
-        $updates[] = 'name = :name';
-    }
-    if ($surname) {
-        $updates[] = 'surname = :surname';
-    }
-    if ($email) {
-        $updates[] = 'email = :email';
-    }
+    {
+        $updates = [];
+        if ($name) {
+            $updates[] = 'name = :name';
+        }
+        if ($surname) {
+            $updates[] = 'surname = :surname';
+        }
+        if ($email) {
+            $updates[] = 'email = :email';
+        }
 
-    if (empty($updates)) {
-        return false; 
-    }
+        if (empty($updates)) {
+            return false; 
+        }
 
-    $sql = 'UPDATE users SET ' . implode(', ', $updates) . ' WHERE id = :id';
-    $query = $this->db->prepare($sql);
-    if ($name) {
-        $query->bindValue(':name', $name);
+        $sql = 'UPDATE users SET ' . implode(', ', $updates) . ' WHERE id = :id';
+        $query = $this->db->prepare($sql);
+        if ($name) {
+            $query->bindValue(':name', $name);
+        }
+        if ($surname) {
+            $query->bindValue(':surname', $surname);
+        }
+        if ($email) {
+            $query->bindValue(':email', $email);
+        }
+        $query->bindValue(':id', $userId);
+        return $query->execute();
     }
-    if ($surname) {
-        $query->bindValue(':surname', $surname);
-    }
-    if ($email) {
-        $query->bindValue(':email', $email);
-    }
-    $query->bindValue(':id', $userId);
-    return $query->execute();
-}
-
 
     public function updateUserPassword($userId, $hashedPassword)
     {

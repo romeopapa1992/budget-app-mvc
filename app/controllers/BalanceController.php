@@ -20,60 +20,60 @@ class BalanceController
         }
     }
 
-    public function showBalance() {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $period = $_POST['period'] ?? null;  
-        $startDate = $_POST['startDate'] ?? null;
-        $endDate = $_POST['endDate'] ?? null;
+    public function showBalance()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $period = $_POST['period'] ?? null;  
+            $startDate = $_POST['startDate'] ?? null;
+            $endDate = $_POST['endDate'] ?? null;
 
-        if ($period !== null) {  
-            $balanceData = $this->balanceModel->getBalance($period, $startDate, $endDate);
-            echo json_encode($balanceData);
-            exit();  
+            if ($period !== null) {  
+                $balanceData = $this->balanceModel->getBalance($period, $startDate, $endDate);
+                echo json_encode($balanceData);
+                exit();
             } else {
-            echo json_encode(['error' => 'Period not specified']);
-            exit();
+                echo json_encode(['error' => 'Period not specified']);
+                exit();
             }
         } else {
-        require_once '../App/views/pages/balance.html';
+            require_once '../App/views/pages/balance.html';
         }
     }
 
     public function getDetails()
-{
-    $period = $_POST['period'];
-    $startDate = $_POST['startDate'] ?? '';
-    $endDate = $_POST['endDate'] ?? '';
+    {
+        $period = $_POST['period'];
+        $startDate = $_POST['startDate'] ?? '';
+        $endDate = $_POST['endDate'] ?? '';
 
-    if ($period === 'custom' && (empty($startDate) || empty($endDate))) {
-        echo json_encode(['error' => 'Invalid custom date range provided.']);
-        return;
+        if ($period === 'custom' && (empty($startDate) || empty($endDate))) {
+            echo json_encode(['error' => 'Invalid custom date range provided.']);
+            return;
+        }
+
+        $balanceModel = new Balance($this->db, $_SESSION['user_id']);
+        $details = $balanceModel->getDetails($period, $startDate, $endDate);
+
+        echo json_encode($details);
     }
 
-    $balanceModel = new Balance($this->db, $_SESSION['user_id']);
-    $details = $balanceModel->getDetails($period, $startDate, $endDate);
+    public function getExpenseCategoryData()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $period = $_POST['period'] ?? null;  
+            $startDate = $_POST['startDate'] ?? null;
+            $endDate = $_POST['endDate'] ?? null;
 
-    echo json_encode($details);
-}
-
-public function getExpenseCategoryData()
-{
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $period = $_POST['period'] ?? null;  
-        $startDate = $_POST['startDate'] ?? null;
-        $endDate = $_POST['endDate'] ?? null;
-
-        if ($period !== null) {  
-            $balanceModel = new Balance($this->db, $_SESSION['user_id']);
-            $balanceModel->setPeriodDates($period, $startDate, $endDate);
-            $expenseCategoryData = $balanceModel->getExpenseCategoriesForPeriod($startDate, $endDate);
-            echo json_encode($expenseCategoryData);
-            exit();  
-        } else {
-            echo json_encode(['error' => 'Period not specified']);
-            exit();
+            if ($period !== null) {  
+                $balanceModel = new Balance($this->db, $_SESSION['user_id']);
+                $balanceModel->setPeriodDates($period, $startDate, $endDate);
+                $expenseCategoryData = $balanceModel->getExpenseCategoriesForPeriod($startDate, $endDate);
+                echo json_encode($expenseCategoryData);
+                exit();
+            } else {
+                echo json_encode(['error' => 'Period not specified']);
+                exit();
+            }
         }
     }
 }
-
-} 

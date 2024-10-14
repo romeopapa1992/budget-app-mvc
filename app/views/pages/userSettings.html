@@ -52,22 +52,25 @@
         </div>
 
         <div id="editForm" class="mt-4" style="display:none;">
-          <div class="form-floating my-2" id="nameField" style="display:none;">
-            <input type="text" class="form-control" id="name" name="name" placeholder="Enter new name">
-            <label for="name">Enter the new name</label>
+          <div class="form-floating my-2" id="nameField">
+            <input type="text" class="form-control" id="floatingName" name="name" placeholder="Enter new name">
+            <label for="floatingName">Enter the new name</label>
+            <p class="error-text">The name cannot be empty.</p>
           </div>
-          <div class="form-floating my-2" id="surnameField" style="display:none;">
-            <input type="text" class="form-control" id="surname" name="surname" placeholder="Enter new surname">
-            <label for="surname">Enter the new surname</label>
+          <div class="form-floating my-2" id="surnameField">
+            <input type="text" class="form-control" id="floatingSurname" name="surname" placeholder="Enter new surname">
+            <label for="floatingSurname">Enter the new surname</label>
+            <p class="error-text">The surname cannot be empty.</p>
           </div>
-          <div class="form-floating my-2" id="emailField" style="display:none;">
+          <div class="form-floating my-2" id="emailField">
             <input type="email" class="form-control" id="floatingEmail" name="email" placeholder="Enter new email">
             <label for="floatingEmail">Enter the new email adress</label>
-            <p class="error-text">Email already exists.</p>
+            <p class="error-text">The email adress cannot be empty.</p>
           </div>
-          <div class="form-floating my-2" id="passwordField" style="display:none;">
-            <input type="password" class="form-control" id="password" name="password" placeholder="Enter new password">
-            <label for="password">Enter the new password</label>
+          <div class="form-floating my-2" id="passwordField">
+            <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Enter new password">
+            <label for="floatingPassword">Enter the new password</label>
+            <p class="error-text">The password cannot be empty.</p>
           </div>
           <button type="submit" class="btn btn-secondary btn-lg custom-btn py-2 mt-3">Save Changes</button>
         </div>

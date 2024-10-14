@@ -37,11 +37,16 @@ $(document).ready(function() {
     function validateAndSubmitForm(form, isLoginForm = false) {
         const inputs = form.find("input");
         let hasError = false;
+        let allFieldsEmpty = true;
     
         inputs.each(function() {
             const input = $(this);
             const value = input.val().trim();
             const errorElement = input.siblings(".error-text");
+    
+            if (value !== "") {
+                allFieldsEmpty = false;
+            }
     
             if (value === "") {
                 showError(input, errorElement);
@@ -54,7 +59,8 @@ $(document).ready(function() {
         if (!hasError) {
             submitForm(form, isLoginForm);
         }
-    }    
+    }
+    
 
     function validatePassword(password) {
         const passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^\da-zA-Z]).{8,}$/;
@@ -112,8 +118,11 @@ $(document).ready(function() {
     $('#editOption').change(function() {
         var selectedOption = $(this).val();
     
-        $('#nameField, #surnameField, #emailField, #passwordField').hide();
+        $('#editSelectionForm')[0].reset();  
+        clearErrors();  
     
+        $('#nameField, #surnameField, #emailField, #passwordField').hide();
+
         if (selectedOption === 'name') {
             $('#nameField').show();
         } else if (selectedOption === 'surname') {
@@ -127,8 +136,20 @@ $(document).ready(function() {
         $('#editForm').show();
     });
     
+    
     $('#editSelectionForm').submit(function(event) {
-        event.preventDefault();
+
+        const name = $('#floatingName').val().trim();
+        const surname = $('#floatingSurname').val().trim();
+        const email = $('#floatingEmail').val().trim();
+        const password = $('#floatingPassword').val().trim();
+    
+        if (!name && !surname && !email && !password) {
+            event.preventDefault(); 
+            return; 
+        }
+    
+        event.preventDefault(); 
         
         $.ajax({
             url: $(this).attr('action'),
@@ -149,6 +170,7 @@ $(document).ready(function() {
             }
         });
     });
+    
     
     $('a[href="/budget-app-mvc/public/index.php?action=balance"]').on('click', function(e) {
         e.preventDefault(); 

@@ -6,42 +6,42 @@
   <title>Registration</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="/budget-app-mvc/public/assets/home.css">
+  <link rel="stylesheet" href="/assets/home.css">
 </head>
 <body class="d-flex h-100 text-center">
 <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
     <nav class="navbar navbar-expand-lg navbar-light bg-none">
         <div class="container-fluid">
           <a class="btn btn-lg btn-secondary custom-btn-nav" href="/budget-app-mvc/public/index.php">
-            <img src="/budget-app-mvc/public/resources/house.svg" class="home-icon" alt="home icon">Home</a>
+            <img src="/resources/house.svg" class="home-icon" alt="home icon">Start Page</a>
         </div>
       </nav>
 <main class="form-signin m-auto">
   <form class="p-3 mx-2" id="registration-form" action="index.php?action=registration" method="post">
-    <h1 class="h3 mb-3 fw-bold">Sign up</h1>
+    <h1 class="mb-3 fw-bold">Sign up</h1>
     <div class="form-floating my-2">
       <input type="text" class="form-control" id="floatingName" name="name" placeholder="First Name">
       <label for="floatingName">First Name</label>
       <p class="error-text">First name cannot be empty.</p>
-      <img src="/budget-app-mvc/public/resources/icon-error.svg" class="error-icon" alt="icon error">
+      <img src="/resources/icon-error.svg" class="error-icon" alt="icon error">
   </div>
   <div class="form-floating my-2">
       <input type="text" class="form-control" id="floatingSurname" name="surname" placeholder="Last Name">
       <label for="floatingSurname">Last Name</label>
       <p class="error-text">Last name cannot be empty.</p>
-      <img src="/budget-app-mvc/public/resources/icon-error.svg" class="error-icon" alt="icon error">
+      <img src="/resources/icon-error.svg" class="error-icon" alt="icon error">
   </div>
   <div class="form-floating my-2">
       <input type="email" class="form-control" id="floatingEmail" name="email" placeholder="name@example.com">
       <label for="floatingEmail">Email address</label>
       <p class="error-text">Email cannot be empty.</p>
-      <img src="/budget-app-mvc/public/resources/icon-error.svg" class="error-icon" alt="icon error">
+      <img src="/resources/icon-error.svg" class="error-icon" alt="icon error">
   </div>
   <div class="form-floating my-2">
       <input type="password" class="form-control" id="floatingPassword" name="password" placeholder="Password">
       <label for="floatingPassword">Password</label>
       <p class="error-text">Password cannot be empty.</p>
-      <img src="/budget-app-mvc/public/resources/icon-error.svg" class="error-icon" alt="icon error">
+      <img src="/resources/icon-error.svg" class="error-icon" alt="icon error">
   </div>
 
     <button class="btn btn-secondary btn-lg custom-btn w-100" type="submit">Sign up</button>
@@ -50,6 +50,6 @@
 </main>
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="/budget-app-mvc/public/assets/js/script.js"></script>
+<script src="/assets/js/script.js"></script>
 </body>
 </html>

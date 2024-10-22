@@ -21,14 +21,14 @@ class HomeController {
         require_once '../App/views/pages/balance.html';
     }
 
-    public function showExpensesForm()
+    public function showExpenseForm()
     {
         require_once '../App/views/pages/expenses.html';
     }
 
     public function showIncomeForm()
     {
-        require_once '../App/views/pages/income.html';
+        require_once '../App/views/pages/incomes.html';
     }
 
     public function showExpenseSettingsForm()

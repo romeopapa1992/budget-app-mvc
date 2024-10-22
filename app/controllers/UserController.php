@@ -100,7 +100,6 @@ class UserController
 
         $errors = [];
 
-        // Walidacja pól
         if (empty($name) && empty($surname) && empty($email) && empty($password)) {
             $errors['general'] = 'At least one field must be filled to update.';
         }
@@ -138,7 +137,6 @@ class UserController
     }
 }
 
-
     public function deleteUser()
     {
         if (session_status() == PHP_SESSION_NONE) {
@@ -163,7 +161,7 @@ class UserController
         }
         session_unset();
         session_destroy();
-        header('Location: /budget-app-mvc/public/index.php?action=signin');
+        header('Location: /budget-app-mvc/public/index.php');
         exit();
     }
 }

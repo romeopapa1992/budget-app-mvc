@@ -27,7 +27,6 @@ main {
   margin-right: 10px;
 }
 
-
 .form-control:focus,
 .form-select:focus {
   border-color: rgb(146, 136, 136); 
@@ -89,7 +88,7 @@ vertical-align: middle;
 }
 
 #deleteAccountBtn:hover {
-  background-color: rgb(151, 32, 32); /* Zmienia kolor na czerwony po najechaniu */
+  background-color: rgb(151, 32, 32); 
   color: white;
 }
 
@@ -151,11 +150,6 @@ margin: 20px;
   main {
     width: 90%; 
     padding: 15px;
-  }
-
-  h1 {
-    font-size: 1.8rem;
-    padding: 1rem;
   }
 
   p.lead {

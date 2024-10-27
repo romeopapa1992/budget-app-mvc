@@ -12,7 +12,6 @@ class BalanceController
     public function __construct($db)
     {
         $this->db = $db;
-
         session_start();
         if (isset($_SESSION['user_id'])) {
             $userId = $_SESSION['user_id'];

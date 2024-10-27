@@ -1,4 +1,5 @@
 <?php
+
 $setup = require_once 'setup.php';
 
 try {

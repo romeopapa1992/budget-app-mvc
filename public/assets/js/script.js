@@ -1,42 +1,50 @@
-$(document).ready(function() {
-    const toggleFieldVisibility = (selector, condition) => $(selector).toggle(condition);
-    const clearForm = (form) => form[0].reset();
-    const toggleErrors = (input, errorElement, show) => {
-        input.toggleClass("error", show);
-        errorElement.toggle(show);
+$(document).ready(function () {
+    const clearErrors = () => {
+        $('.error-text').hide();
+        $('input, select').removeClass('error');
     };
 
-    $("form").not("#addExpenseCategoryForm, #removeExpenseCategoryForm, #addIncomeCategoryForm, #removeIncomeCategoryForm")
-        .submit(function(event) {
-            event.preventDefault();
-            const form = $(this);
-            validateAndSubmitForm(form, form.attr('action').includes('signin'));
-        });
+    const showError = (input, errorElement) => {
+        input.addClass("error");
+        errorElement.show();
+    };
 
-    function handleErrors(errors) {
-        $('.error-text').hide();
-        $('input').removeClass('error');
+    const hideError = (input, errorElement) => {
+        input.removeClass("error");
+        errorElement.hide();
+    };
+
+    const handleErrors = (errors) => {
+        clearErrors();
         Object.keys(errors).forEach(key => {
-            const input = $(`#floating${capitalizeFirstLetter(key)}`);
-            toggleErrors(input, input.siblings('.error-text').text(errors[key]), true);
+            const input = $(`#floating${key.charAt(0).toUpperCase() + key.slice(1)}`);
+            const errorElement = input.siblings('.error-text');
+            errorElement.text(errors[key]).show();
+            input.addClass('error');
         });
-    }
+    };  
 
-    $('input').on('input', function() {
-        toggleErrors($(this), $(this).siblings(".error-text"), false);
-    });
+    const validateAndSubmitForm = (form, isLoginForm = false) => {
+        const inputs = form.find("input");
+        let hasError = false, allFieldsEmpty = true;
 
-    function validateAndSubmitForm(form, isLoginForm = false) {
-        let hasError = false;
-        let allFieldsEmpty = true;
-        form.find("input").each(function() {
-            const input = $(this), value = input.val().trim();
-            allFieldsEmpty = allFieldsEmpty && !value;
-            toggleErrors(input, input.siblings(".error-text"), !value);
-            hasError = hasError || !value;
+        inputs.each(function () {
+            const input = $(this);
+            const value = input.val().trim();
+            const errorElement = input.siblings(".error-text");
+
+            if (value) allFieldsEmpty = false;
+
+            if (!value) {
+                showError(input, errorElement);
+                hasError = true;
+            } else {
+                hideError(input, errorElement);
+            }
         });
+
         if (!hasError) submitForm(form, isLoginForm);
-    }
+    };
 
     function submitForm(form, isLoginForm) {
         $.ajax({
@@ -44,179 +52,303 @@ $(document).ready(function() {
             type: 'POST',
             data: form.serialize(),
             dataType: 'json',
-            success: (response) => {
+            success: function(response) {
                 if (response.status === 'success') {
-                    alert(response.message);
-                    clearForm(form);
-                    window.location.href = isLoginForm
-                        ? '/budget-app-mvc/public/index.php?action=balance'
-                        : '/budget-app-mvc/public/index.php?action=signin';
-                } else handleErrors(response.errors || {});
-            },
-            error: () => alert('An error occurred. Please try again.')
+                    alert(response.message); 
+                    form[0].reset(); 
+    
+                    if (isLoginForm) {
+                        window.location.href = '/balance';
+                    } else if (form.attr('action').includes('registration')) {
+                        window.location.href = '/signin';
+                    }
+                } else if (response.status === 'error') {
+                    if (response.errors) {
+                        handleErrors(response.errors);
+                    } else {
+                        alert(response.message || 'An error occurred.');
+                    }
+                } 
+            }
         });
-    }
-
-    $('#editOption').change(function() {
-        const fieldMap = {
-            name: '#nameField',
-            surname: '#surnameField',
-            email: '#emailField',
-            password: '#passwordField'
-        };
-        $('#editSelectionForm')[0].reset();
-        clearErrors();
-        Object.values(fieldMap).forEach(field => $(field).hide());
-        toggleFieldVisibility(fieldMap[$(this).val()], true);
-        $('#editForm').show();
+    } 
+    
+    $('#clear-income-button').click(function() {
+        $('#addIncomeForm')[0].reset(); 
+        clearErrors(); 
     });
 
-    $('#editSelectionForm').submit(function(event) {
+    $('#clear-expense-button').click(function() {
+        $('#addExpenseForm')[0].reset(); 
+        clearErrors(); 
+    });
+
+    $("form").not("#addExpenseCategoryForm, #removeExpenseCategoryForm, #addIncomeCategoryForm, #removeIncomeCategoryForm").submit(function (event) {
         event.preventDefault();
+        validateAndSubmitForm($(this), $(this).attr('action').includes('signin'));
+    });
+
+    $('input').on('input', function () {
+        hideError($(this), $(this).siblings(".error-text"));
+    });
+
+    $('#editOption').change(function () {
+        const selectedOption = $(this).val();
+        $('#editSelectionForm')[0].reset();
+        clearErrors();
+        $('#editForm').show();
+
+        $('#nameField, #surnameField, #emailField, #passwordField').hide();
+        if (selectedOption) $(`#${selectedOption}Field`).show();
+    });
+
+    $('#editSelectionForm').submit(function (event) {
+        event.preventDefault();
+        if (!$(this).find('input').toArray().some(input => $(input).val().trim())) return;
+
         $.ajax({
             url: $(this).attr('action'),
             type: 'POST',
             data: $(this).serialize(),
             dataType: 'json',
-            success: (response) => {
+            success: function (response) {
                 if (response.status === 'success') {
                     alert('Data updated successfully.');
-                    clearForm($('#editSelectionForm'));
+                    $('#editSelectionForm')[0].reset();
                     $('#editForm').hide();
-                } else handleErrors(response.errors || {});
+                } else handleErrors(response.errors);
             },
-            error: () => alert('An error occurred. Please try again.')
+            error: function () {
+                alert('An error occurred. Please try again.');
+            }
         });
     });
 
-    $('#clear-income-button, #clear-expense-button').click(function() {
-        clearForm($(this).closest('form'));
-        clearErrors();
-    });
-
-    $('#deleteAccountBtn').on('click', () => $('#deleteAccountModal').modal('show'));
-
-    $('#confirmDeleteBtn').on('click', function() {
-        $.ajax({
-            url: '/budget-app-mvc/public/index.php?action=deleteUser',
-            type: 'POST',
-            success: (response) => {
-                const jsonResponse = JSON.parse(response);
-                alert(jsonResponse.status === 'success' ? 'Account deleted successfully.' : 'Failed to delete account.');
-                if (jsonResponse.status === 'success') window.location.href = '/budget-app-mvc/public/index.php';
-            },
-            error: () => alert('An error occurred. Please try again.')
-        });
-        $('#deleteAccountModal').modal('hide');
-    });
-
-    $('#addExpenseCategoryBtn, #removeExpenseCategoryBtn, #addIncomeCategoryBtn, #removeIncomeCategoryBtn').click(function() {
-        $($(this).data('target')).modal('show');
-    });
-
-    $('#period').change(function() {
+    $('#period').on('change', function () {
         $('#balance-info, #details-section').addClass('d-none');
-        toggleFieldVisibility('#custom-date-range', $(this).val() === 'custom');
-        $('#startDate, #endDate').val('');
-        $('.date-error').addClass('d-none');
-    });
+        const isCustomPeriod = $(this).val() === 'custom';
+        $('#custom-date-range').toggleClass('d-none', !isCustomPeriod);
+        if (isCustomPeriod) {
+            $('#startDate, #endDate').val('');
+            $('#startDateError, #endDateError').addClass('d-none');  
+            $('#startDate, #endDate').removeClass('error');  
+        }
+    });    
 
-    $('#balance-form').on('submit', function(e) {
+    $('#balance-form').on('submit', function (e) {
         e.preventDefault();
         const period = $('#period').val(), startDate = $('#startDate').val(), endDate = $('#endDate').val();
+
         if (period === 'custom' && (!startDate || !endDate)) {
-            $('.date-error').toggleClass('d-none', !!startDate && !!endDate);
+            if (!startDate) $('#startDateError').removeClass('d-none');
+            if (!endDate) $('#endDateError').removeClass('d-none');
             return;
         }
+
         $.ajax({
             type: 'POST',
-            url: '/budget-app-mvc/public/index.php?action=balance',
+            url: '/balance',
             data: { period, startDate, endDate },
-            success: (response) => {
+            success: function (response) {
                 const balanceData = JSON.parse(response);
-                if (balanceData.error) alert(`Error: ${balanceData.error}`);
-                else {
+                if (balanceData.error) {
+                    alert('Error: ' + balanceData.error);
+                } else {
                     $('#balance').text(`Balance: ${balanceData.balance} PLN`);
                     $('#total-income').text(`Total Income: ${balanceData.income} PLN`);
                     $('#total-expense').text(`Total Expense: ${balanceData.expense} PLN`);
                     $('#balance-info').removeClass('d-none');
                 }
             },
-            error: () => alert('An error occurred. Please try again.')
-        });
-    });
-
-    $('#clear-button').click(function() {
-        clearForm($('#balance-form'));
-        $('#custom-date-range, #balance-info, #details-section').addClass('d-none');
-    });
-
-    ['Expense', 'Income'].forEach(type => {
-        $.ajax({
-            url: `/budget-app-mvc/public/index.php?action=get${type}Categories`,
-            method: 'GET',
-            success: (data) => {
-                const select = $(`#${type.toLowerCase()}CategorySelect`).empty();
-                JSON.parse(data).forEach(category => select.append(new Option(category.name, category.id)));
+            error: function () {
+                alert('An error occurred. Please try again.');
             }
         });
     });
 
-    $('#addExpenseCategoryForm, #removeExpenseCategoryForm, #addIncomeCategoryForm, #removeIncomeCategoryForm').on('submit', function(event) {
+    const setupModalForm = (buttonId, modalId) => $(buttonId).click(() => $(modalId).modal('show'));
+    setupModalForm('#deleteAccountBtn', '#deleteAccountModal');
+    setupModalForm('#addExpenseCategoryBtn', '#expenseCategoryModal');
+    setupModalForm('#removeExpenseCategoryBtn', '#removeExpenseCategoryModal');
+    setupModalForm('#addIncomeCategoryBtn', '#incomeCategoryModal');
+    setupModalForm('#removeIncomeCategoryBtn', '#removeIncomeCategoryModal');
+
+    $('#confirmDeleteBtn').click(function () {
+        $.ajax({
+            url: '/deleteUser',
+            type: 'POST',
+            success: function (response) {
+                if (JSON.parse(response).status === 'success') {
+                    alert('Account deleted successfully.');
+                    window.location.href = '/ ';
+                } else {
+                    alert('Failed to delete account. Please try again.');
+                }
+            },
+            error: function () {
+                alert('An error occurred. Please try again.');
+            }
+        });
+        $('#deleteAccountModal').modal('hide');
+    });
+
+    const updateCategories = (url, selectId) => {
+        $.ajax({
+            url: url,
+            method: 'GET',
+            success: function (data) {
+                const categories = JSON.parse(data);
+                const select = $(selectId);
+                select.empty();
+                categories.forEach(category => {
+                    select.append(new Option(category.name, category.id));
+                });
+            }
+        });
+    };
+    updateCategories('/getExpenseCategories', '#expenseCategorySelect');
+    updateCategories('/getIncomeCategories', '#incomeCategorySelect');
+
+    $('#addExpenseCategoryForm, #removeExpenseCategoryForm, #addIncomeCategoryForm, #removeIncomeCategoryForm').submit(function (event) {
         event.preventDefault();
         $.ajax({
             url: $(this).attr('action'),
             method: 'POST',
             data: $(this).serialize(),
-            success: (response) => {
+            success: function (response) {
                 alert(JSON.parse(response).message);
                 location.reload();
             }
         });
     });
 
+    $('#clear-button').click(function () {
+        $('#balance-form')[0].reset();
+        $('#custom-date-range, #balance-info, #details-section').addClass('d-none');
+    });
+
     let expenseChart;
+
     function drawExpenseChart(expenseData) {
+        $('#no-expenses-message').addClass('d-none');
+    
+        if (expenseChart) {
+            expenseChart.destroy();
+        }
+    
         const ctx = document.getElementById('expenseChart').getContext('2d');
-        if (expenseChart) expenseChart.destroy();
+        const labels = expenseData.map(item => item.category);
+        const data = expenseData.map(item => parseFloat(item.total_amount));
+    
         expenseChart = new Chart(ctx, {
             type: 'pie',
             data: {
-                labels: expenseData.map(item => item.category),
+                labels: labels,
                 datasets: [{
-                    data: expenseData.map(item => parseFloat(item.total_amount)),
-                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#8A89A6', '#98ABC5', '#8C564B', '#E377C2', '#7F7F7F', '#BCBD22', '#17BECF']
+                    label: 'Expenses by Category',
+                    data: data,
+                    backgroundColor: [
+                        '#FF6384', '#36A2EB', '#FFCE56', '#8A89A6', '#98ABC5', '#8C564B', '#E377C2', '#7F7F7F', '#BCBD22', '#17BECF'
+                    ]
                 }]
             },
             options: {
                 responsive: true,
                 plugins: {
-                    legend: { position: 'top', labels: { color: 'white' } },
-                    tooltip: { callbacks: { label: (context) => `${context.label}: ${context.raw} PLN` } }
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: 'white',
+                        },
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.raw + ' PLN';
+                            }
+                        }
+                    }
                 }
             }
         });
     }
-
+    
     $('#view-button').click(function() {
-        const period = $('#period').val(), startDate = $('#startDate').val(), endDate = $('#endDate').val();
+        const period = $('#period').val();
+        const startDate = $('#startDate').val();
+        const endDate = $('#endDate').val();
+    
         $.ajax({
-            url: '/budget-app-mvc/public/index.php?action=getDetails',
+            url: '/getDetails',
             type: 'POST',
             data: { period, startDate, endDate },
-            success: (response) => {
-                const data = JSON.parse(response), incomeDetails = $('#income-details tbody').empty(), expenseDetails = $('#expense-details tbody').empty();
-                if (data.incomes.length) data.incomes.forEach((income, index) => incomeDetails.append(
-                    `<tr><td>${index + 1}</td><td>${income.date_of_income}</td><td>${income.amount}</td><td>${income.category}</td><td>${income.comment}</td></tr>`
-                ));
-                else incomeDetails.append('<tr><td colspan="5">No incomes for the selected period.</td></tr>');
-                if (data.expenses.length) data.expenses.forEach((expense, index) => expenseDetails.append(
-                    `<tr><td>${index + 1}</td><td>${expense.date_of_expense}</td><td>${expense.amount}</td><td>${expense.category}</td><td>${expense.comment}</td></tr>`
-                ));
-                else expenseDetails.append('<tr><td colspan="5">No expenses for the selected period.</td></tr>');
+            success: function(response) {
+                const data = JSON.parse(response);
+    
+                const incomeDetails = $('#income-details tbody');
+                incomeDetails.empty();
+                if (data.incomes.length) {
+                    data.incomes.forEach((income, index) => {
+                        incomeDetails.append(`
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${income.date_of_income}</td>
+                                <td>${income.amount}</td>
+                                <td>${income.category}</td>
+                                <td>${income.comment}</td>
+                            </tr>
+                        `);
+                    });
+                } else {
+                    incomeDetails.append('<tr><td colspan="5">No incomes for the selected period.</td></tr>');
+                }
+    
+                const expenseDetails = $('#expense-details tbody');
+                expenseDetails.empty();
+                if (data.expenses.length) {
+                    data.expenses.forEach((expense, index) => {
+                        expenseDetails.append(`
+                            <tr>
+                                <td>${index + 1}</td>
+                                <td>${expense.date_of_expense}</td>
+                                <td>${expense.amount}</td>
+                                <td>${expense.category}</td>
+                                <td>${expense.payment_method}</td>
+                                <td>${expense.comment}</td>
+                            </tr>
+                        `);
+                    });
+                } else {
+                    expenseDetails.append('<tr><td colspan="6">No expenses for the selected period.</td></tr>');
+                }
+    
                 $('#details-section').removeClass('d-none');
-                drawExpenseChart(data.expenseSummary);
+    
+                $.ajax({
+                    url: '/getExpenseCategoryData',
+                    type: 'POST',
+                    data: { period, startDate, endDate },
+                    success: function(categoryResponse) {
+                        const categoryData = JSON.parse(categoryResponse);
+                        if (categoryData.length) {
+                            $('#expenseChart').removeClass('d-none');
+                            $('#no-expenses-message').addClass('d-none');
+                            drawExpenseChart(categoryData);
+                        } else {
+                            if (expenseChart) expenseChart.destroy();
+                            $('#expenseChart').addClass('d-none');
+                            $('#no-expenses-message').removeClass('d-none');
+                        }
+                    },
+                    error: function() {
+                        alert('Error fetching expense category data.');
+                    }
+                });
+            },
+            error: function() {
+                alert('Error fetching data. Please try again.');
             }
         });
     });
+    
 });

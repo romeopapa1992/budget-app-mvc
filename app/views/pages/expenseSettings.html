@@ -14,26 +14,26 @@
   <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
     <nav class="navbar navbar-expand-lg navbar-light bg-none mb-auto">
       <div class="container-fluid">
-        <a class="btn btn-lg btn-secondary custom-btn-nav" href="/budget-app-mvc/public/index.php?action=balance">
+        <a class="btn btn-lg btn-secondary custom-btn-nav" href="/balance">
           <img src="/resources/balance.svg" class="balance-icon" alt="balance icon">Balance</a>
         <button id="navbar-toggler" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <div class="navbar-nav ms-auto">
-            <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php?action=income">
+            <a class="btn btn-lg btn-secondary custom-btn" href="/income">
               <img src="/resources/income.svg" class="income-icon" alt="income icon">Incomes</a>
-            <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php?action=expense">
+            <a class="btn btn-lg btn-secondary custom-btn" href="/expense">
               <img src="/resources/expense.svg" class="expense-icon" alt="expense icon">Expenses</a>
-            <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php?action=logout">
+            <a class="btn btn-lg btn-secondary custom-btn" href="/logout">
               <img src="/resources/logout.svg" class="logout-icon" alt="logout icon">Log out</a>
             <div class="btn-group">
               <button class="btn btn-lg btn-secondary custom-btn dropdown-toggle active" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                 <img src="/resources/settings.svg" class="settings-icon" alt="settings icon">Settings</button>
               <ul class="dropdown-menu" aria-labelledby="settingsDropdown">
-                <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=userSettings">User Settings</a></li>
-                <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=expenseSettings">Expense Category</a></li>
-                <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=incomeSettings">Income Category</a></li>
+                <li><a class="dropdown-item" href="/userSettings">User Settings</a></li>
+                <li><a class="dropdown-item" href="/expenseSettings">Expense Category</a></li>
+                <li><a class="dropdown-item" href="/incomeSettings">Income Category</a></li>
               </ul>
             </div>
           </div>
@@ -42,14 +42,14 @@
     </nav>
     <main class="form-expense-settings p-3 m-auto">
       <h1 class="fw-bold">Expense Category</h1>
-      <form class="mx-2 p-2" id="addExpenseCategoryForm" action="/budget-app-mvc/public/index.php?action=addExpenseCategory" method="POST">
+      <form class="mx-2 p-2" id="addExpenseCategoryForm" action="/addExpenseCategory" method="POST">
         <div class="form-floating my-2">
           <input type="text" class="form-control" id="newExpenseCategory" name="newExpenseCategory" placeholder="Enter category name" required>
           <label for="newExpenseCategory">Add Expense Category</label>
         </div>
         <button type="submit" class="btn btn-secondary btn-lg custom-btn py-2">Add Category</button>
       </form>
-      <form class="mx-2 p-2" id="removeExpenseCategoryForm" action="/budget-app-mvc/public/index.php?action=removeExpenseCategory" method="POST">
+      <form class="mx-2 p-2" id="removeExpenseCategoryForm" action="/removeExpenseCategory" method="POST">
         <div class="form-floating my-2">
           <select class="form-control" id="expenseCategorySelect" name="expenseCategorySelect"></select>
           <label for="expenseCategorySelect">Remove Expense Category</label>

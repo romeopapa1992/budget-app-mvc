@@ -2,7 +2,11 @@
 
 require_once '../vendor/autoload.php';
 require_once '../App/Config/database.php';
+require_once '../App/Config/Router.php';
+require_once '../App/Middleware/AuthMiddleware.php';
 
+use App\Middleware\AuthMiddleware;
+use App\Config\Router;
 use App\Controllers\{
     HomeController, UserController, IncomeController, ExpenseController, BalanceController
 };
@@ -12,108 +16,29 @@ $userController = new UserController($db);
 $incomeController = new IncomeController($db);
 $expenseController = new ExpenseController($db);
 $balanceController = new BalanceController($db);
+$router = new Router($db);
 
-if (isset($_GET['action'])) {
-    switch ($_GET['action']) {
-        case 'registration':
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $userController->registration();
-            } else {
-                $homeController->showRegistrationForm();
-            }
-            break;
+$router->add('', HomeController::class, 'index');
+$router->add('registration', UserController::class, 'registration');
+$router->add('signin', UserController::class, 'signin');
+$router->add('income', IncomeController::class, 'addIncome', true);
+$router->add('expense', ExpenseController::class, 'addExpense', true);
+$router->add('balance', BalanceController::class, 'showBalance', true);
+$router->add('userSettings', HomeController::class, 'showUserSettingsForm', true);
+$router->add('expenseSettings', HomeController::class, 'showExpenseSettingsForm', true);
+$router->add('incomeSettings', HomeController::class, 'showIncomeSettingsForm', true);
+$router->add('addExpenseCategory', ExpenseController::class, 'addExpenseCategory');
+$router->add('removeExpenseCategory', ExpenseController::class, 'removeExpenseCategory');
+$router->add('getExpenseCategories', ExpenseController::class, 'getExpenseCategories');
+$router->add('addIncomeCategory', IncomeController::class, 'addIncomeCategory');
+$router->add('getIncomeCategories', IncomeController::class, 'getIncomeCategories');
+$router->add('removeIncomeCategory', IncomeController::class, 'removeIncomeCategory');
+$router->add('getDetails', BalanceController::class, 'getDetails');
+$router->add('getExpenseCategoryData', BalanceController::class, 'getExpenseCategoryData');
+$router->add('updateUser', UserController::class, 'updateUser');
+$router->add('deleteUser', UserController::class, 'deleteUser');
+$router->add('logout', UserController::class, 'logout');
 
-         case 'signin':
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $userController->signin();
-            } else {
-                $homeController->showSigninForm();
-            }
-            break;
+$path = $_GET['path'] ?? '';
 
-        case 'income': 
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $incomeController->addIncome();
-            } else {
-                $homeController->showIncomeForm();
-            }
-            break;
-
-        case 'expense':
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $expenseController->addExpense();
-            } else {
-                $homeController->showExpenseForm();
-            }
-            break;
-
-        case 'balance':
-            if (session_status() === PHP_SESSION_NONE) {
-                session_start();
-            } 
-            if (isset($_SESSION['user_id'])) {
-                $balanceController->showBalance();
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'You need to log in to access the page.']);
-            }
-            break;
-
-        case 'expenseSettings':
-            $homeController->showExpenseSettingsForm();
-            break;
-
-        case 'addExpenseCategory':
-            $expenseController->addExpenseCategory();
-            break;
-
-        case 'removeExpenseCategory':
-            $expenseController->removeExpenseCategory();
-            break;
-
-        case 'getExpenseCategories':
-            $expenseController->getExpenseCategories();
-            break;
-
-        case 'incomeSettings':
-            $homeController->showIncomeSettingsForm();
-            break;
-
-        case 'addIncomeCategory':
-            $incomeController->addIncomeCategory();
-            break;
-        
-        case 'getDetails':
-            $balanceController->getDetails();
-            break;
-
-        case 'removeIncomeCategory':
-            $incomeController->removeIncomeCategory();
-            break;
-
-        case 'getIncomeCategories':
-            $incomeController->getIncomeCategories();
-            break;
-        
-        case 'userSettings':
-            $homeController->showUserSettingsForm();
-            break;
-
-        case 'updateUser':
-            $userController->updateUser();
-            break;
-        
-        case 'getExpenseCategoryData':
-            $balanceController->getExpenseCategoryData();
-            break;
-
-        case 'deleteUser':
-            $userController->deleteUser();
-            break;
-
-        case 'logout':  
-            $userController->logout();
-            break;
-        }
-    } else {
-    $homeController->index();
-}
+$router->handle($path);

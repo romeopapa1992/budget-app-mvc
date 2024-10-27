@@ -46,11 +46,15 @@ class IncomeController
 
             if ($this->incomeModel->addIncome($userId, $amount, $dateOfIncome, $category, $comment)) {
                 echo json_encode(['status' => 'success', 'message' => 'Income has been added successfully!']);
+                exit;
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'An error occurred while adding the income.']);
+                exit;
             }
         }
+        require_once '../App/views/pages/incomes.html'; 
     }
+
 
     public function addIncomeCategory()
     {

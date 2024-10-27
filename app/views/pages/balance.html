@@ -12,26 +12,26 @@
   <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
     <nav class="navbar navbar-expand-lg navbar-light bg-none mb-0">
       <div class="container-fluid">
-        <a class="btn btn-lg btn-secondary custom-btn-nav active" href="/budget-app-mvc/public/index.php?action=balance">
+        <a class="btn btn-lg btn-secondary custom-btn-nav active" href="/balance">
           <img src="/resources/balance.svg" class="balance-icon" alt="balance icon">Balance</a>
         <button id="navbar-toggler" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <div class="navbar-nav ms-auto">
-            <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php?action=income">
+            <a class="btn btn-lg btn-secondary custom-btn" href="/income">
               <img src="/resources/income.svg" class="income-icon" alt="income icon">Incomes</a>
-            <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php?action=expense">
+            <a class="btn btn-lg btn-secondary custom-btn" href="/expense">
               <img src="/resources/expense.svg" class="expense-icon" alt="expense icon">Expenses</a>
-            <a class="btn btn-lg btn-secondary custom-btn" href="/budget-app-mvc/public/index.php?action=logout">
+            <a class="btn btn-lg btn-secondary custom-btn" href="/logout">
               <img src="/resources/logout.svg" class="logout-icon" alt="logout icon">Log out</a>
             <div class="btn-group">
               <button class="btn btn-lg btn-secondary custom-btn dropdown-toggle" type="button" id="settingsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                 <img src="/resources/settings.svg" class="settings-icon" alt="settings icon">Settings </button>
               <ul class="dropdown-menu" aria-labelledby="settingsDropdown">
-                <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=userSettings">User Settings</a></li>
-                <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=expenseSettings">Expense Category</a></li>
-                <li><a class="dropdown-item" href="/budget-app-mvc/public/index.php?action=incomeSettings">Income Category</a></li>
+                <li><a class="dropdown-item" href="/userSettings">User Settings</a></li>
+                <li><a class="dropdown-item" href="/expenseSettings">Expense Category</a></li>
+                <li><a class="dropdown-item" href="/incomeSettings">Income Category</a></li>
               </ul>
             </div>
           </div>
@@ -39,7 +39,7 @@
       </div>
     </nav>
     <main class="form-balance mx-auto m-auto">
-      <form class="p-3 mx-2" id="balance-form" action="/budget-app-mvc/public/index.php?action=balance" method="post">
+      <form class="p-3 mx-2" id="balance-form" action="/balance" method="post">
         <h1 class="mb-3 fw-bold">View your balance</h1>
         <div class="form-floating mb-3 my-2">
           <select id="period" name="period" class="form-select" aria-label="Balance period">

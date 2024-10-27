@@ -39,12 +39,15 @@ class ExpenseController
 
             if ($this->expenseModel->addExpense($userId, $amount, $dateOfExpense, $category, $paymentMethod, $comment)) {
                 echo json_encode(['status' => 'success', 'message' => 'Expense has been added successfully!']);
+                exit;
             } else {
                 echo json_encode(['status' => 'error', 'message' => 'An error occurred while adding the expense.']);
+                exit;
             }
         }
+        require_once '../App/views/pages/expenses.html'; 
     }
-
+           
     public function addExpenseCategory()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {

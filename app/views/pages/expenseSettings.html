@@ -42,23 +42,23 @@
     </nav>
     <main class="form-expense-settings p-3 m-auto">
       <h1 class="fw-bold">Expense Category</h1>
-      <form class="mx-2 p-2" id="addExpenseCategoryForm" action="/addExpenseCategory" method="POST">
-        <div class="form-floating my-2">
-          <input type="text" class="form-control" id="newExpenseCategory" name="newExpenseCategory" placeholder="Enter category name" required>
-          <label for="newExpenseCategory">Add Expense Category</label>
-        </div>
-        <button type="submit" class="btn btn-secondary btn-lg custom-btn py-2">Add Category</button>
-      </form>
-      <form class="mx-2 p-2" id="removeExpenseCategoryForm" action="/removeExpenseCategory" method="POST">
-        <div class="form-floating my-2">
-          <select class="form-control" id="expenseCategorySelect" name="expenseCategorySelect"></select>
-          <label for="expenseCategorySelect">Remove Expense Category</label>
-        </div>
-        <button type="submit" class="btn btn-secondary btn-lg custom-btn py-2">Remove Category</button>
-      </form>
+        <form class="mx-2 p-2" id="addExpenseCategoryForm" action="/addExpenseCategory" method="POST">
+         <div class="form-floating my-2">
+            <input type="text" class="form-control" id="newExpenseCategory" name="newExpenseCategory" placeholder="Enter category name" required>
+            <label for="newExpenseCategory">Add Expense Category</label>
+            </div>
+            <button type="submit" class="btn btn-secondary btn-lg custom-btn py-2">Add Category</button>
+        </form>
+        <form class="mx-2 p-2" id="removeExpenseCategoryForm" action="/removeExpenseCategory" method="POST">
+            <div class="form-floating my-2">
+            <select class="form-control" id="expenseCategorySelect" name="expenseCategorySelect"></select>
+            <label for="expenseCategorySelect">Remove Expense Category</label>
+         </div>
+            <button type="submit" class="btn btn-secondary btn-lg custom-btn py-2">Remove Category</button>
+        </form>
     </main>
   </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <script src="/assets/js/script.js"></script>
+  <script type="module" src="/assets/js/script.js"></script>
 </body>
 </html>

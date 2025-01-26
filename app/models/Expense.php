@@ -14,7 +14,7 @@ class Expense
     }
 
     public function addExpense($userId, $amount, $dateOfExpense, $category, $paymentMethod, $comment)
-    {
+    {   
         $sql = 'SELECT name FROM expenses_category_default WHERE id = :category_id';
         $query = $this->db->prepare($sql);
         $query->bindValue(':category_id', $category, PDO::PARAM_INT);
@@ -45,10 +45,22 @@ class Expense
             $expenseCategoryAssignedToUserId = $assignedCategoryData['id'];
         }
 
+        $sql = 'SELECT name FROM payment_methods_default WHERE name = :payment_method';
+        $query = $this->db->prepare($sql);
+        $query->bindValue(':payment_method', $paymentMethod, PDO::PARAM_STR);
+        $query->execute();
+        $defaultPaymentMethodData = $query->fetch(PDO::FETCH_ASSOC);
+
+        if (!$defaultPaymentMethodData) {
+            return false; 
+        }
+
+        $defaultPaymentMethodName = $defaultPaymentMethodData['name'];
+
         $sql = 'SELECT id FROM payment_methods_assigned_to_users WHERE user_id = :user_id AND name = :payment_method';
         $query = $this->db->prepare($sql);
         $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
-        $query->bindValue(':payment_method', $paymentMethod, PDO::PARAM_STR);
+        $query->bindValue(':payment_method', $defaultPaymentMethodName, PDO::PARAM_STR);
         $query->execute();
         $assignedPaymentMethodData = $query->fetch(PDO::FETCH_ASSOC);
 
@@ -56,7 +68,7 @@ class Expense
             $sql = 'INSERT INTO payment_methods_assigned_to_users (user_id, name) VALUES (:user_id, :payment_method)';
             $query = $this->db->prepare($sql);
             $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
-            $query->bindValue(':payment_method', $paymentMethod, PDO::PARAM_STR);
+            $query->bindValue(':payment_method', $defaultPaymentMethodName, PDO::PARAM_STR);
             $query->execute();
             $paymentMethodAssignedToUserId = $this->db->lastInsertId();
         } else {
@@ -108,4 +120,5 @@ class Expense
         $query->execute();
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
+
 }

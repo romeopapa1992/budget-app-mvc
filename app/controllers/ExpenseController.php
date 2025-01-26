@@ -83,4 +83,5 @@ class ExpenseController
         $categories = $this->expenseModel->getExpenseCategories();
         echo json_encode($categories);
     }
+
 }

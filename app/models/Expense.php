@@ -121,4 +121,49 @@ class Expense
         return $query->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getCategoryLimit($userId, $categoryId, $monthYear)
+{
+    $sql = 'SELECT limit_amount FROM expense_limits 
+            WHERE user_id = :user_id AND category_id = :category_id AND month_year = :month_year';
+    
+    $query = $this->db->prepare($sql);
+    $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
+    $query->bindValue(':category_id', $categoryId, PDO::PARAM_INT);
+    $query->bindValue(':month_year', $monthYear, PDO::PARAM_STR);
+    $query->execute();
+
+    return $query->fetchColumn();
+
+}
+
+public function setCategoryLimit($userId, $categoryId, $monthYear, $limitAmount)
+{
+    $sql = 'INSERT INTO expense_limits (user_id, category_id, month_year, limit_amount) 
+            VALUES (:user_id, :category_id, :month_year, :limit_amount)
+            ON DUPLICATE KEY UPDATE limit_amount = VALUES(limit_amount)';
+
+    $query = $this->db->prepare($sql);
+    $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
+    $query->bindValue(':category_id', $categoryId, PDO::PARAM_INT);
+    $query->bindValue(':month_year', $monthYear, PDO::PARAM_STR);
+    $query->bindValue(':limit_amount', $limitAmount, PDO::PARAM_STR);
+
+    return $query->execute();
+}
+
+public function getTotalExpensesForCategory($userId, $categoryId, $monthYear)
+{
+    $sql = 'SELECT SUM(amount) as total FROM expenses 
+            WHERE user_id = :user_id 
+            AND expense_category_assigned_to_user_id = :category_id 
+            AND DATE_FORMAT(date_of_expense, "%Y-%m") = :month_year';
+    $query = $this->db->prepare($sql);
+    $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
+    $query->bindValue(':category_id', $categoryId, PDO::PARAM_INT);
+    $query->bindValue(':month_year', $monthYear, PDO::PARAM_STR);
+    $query->execute();
+    $result = $query->fetch(PDO::FETCH_ASSOC);
+    return $result ? $result['total'] : 0;
+}
+
 }

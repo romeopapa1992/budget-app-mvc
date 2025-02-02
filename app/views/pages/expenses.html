@@ -56,13 +56,15 @@
           <p class="error-text" id="floatingDateError">Select the date.</p>
         </div>
         <div class="form-floating my-2">
-          <select class="form-control" id="expenseCategorySelect" name="category">             
+          <select class="form-control" id="expenseCategorySelect" name="category">
+            <option value="" disabled selected>Select a category</option>             
           </select>
         <label for="category">Expense Category</label>
         <p class="error-text" id="categoryError">Select the category.</p>
         </div>
         <div class="form-floating my-2">
           <select class="form-select" id="floatingPaymentMethod" aria-label="Select Payment Method" name="payment_method">
+            <option value="" disabled selected>Select a method</option>
             <option value="Debit card">Debit card</option>
             <option value="Cash">Cash</option>
             <option value="Credit card">Credit card</option>
@@ -79,6 +81,14 @@
           <button class="btn btn-secondary btn-lg custom-btn py-2" type="button" id="clear-expense-button">Clear</button> 
         </div>
       </form>
+      <div class="form-floating my-2">
+        <input type="text" class="form-control" id="categoryLimitInfo" value="Category required" disabled>
+        <label for="categoryLimitInfo">Limit Info</label>
+    </div>
+    <div class="form-floating my-2">
+        <input type="text" class="form-control" id="categorySpentAmount" value="Category required" disabled>
+        <label for="categorySpentAmount">Limit Value</label>
+    </div>    
     </main>
   </div>
 

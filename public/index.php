@@ -38,6 +38,11 @@ $router->add('getExpenseCategoryData', BalanceController::class, 'getExpenseCate
 $router->add('updateUser', UserController::class, 'updateUser');
 $router->add('deleteUser', UserController::class, 'deleteUser');
 $router->add('logout', UserController::class, 'logout');
+$router->add('getExpenseCategories', ExpenseController::class, 'getExpenseCategories');
+$router->add('setCategoryLimit', ExpenseController::class, 'setCategoryLimit');
+$router->add('getCategoryLimit', ExpenseController::class, 'getCategoryLimit');
+$router->add('getCategoryLimitAndSpentAmount', ExpenseController::class, 'getCategoryLimitAndSpentAmount');
+$router->add('getCategorySpentAmount', ExpenseController::class, 'getCategorySpentAmount');
 
 $path = $_GET['path'] ?? '';
 

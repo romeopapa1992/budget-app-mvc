@@ -51,11 +51,30 @@
         </form>
         <form class="mx-2 p-2" id="removeExpenseCategoryForm" action="/removeExpenseCategory" method="POST">
             <div class="form-floating my-2">
-            <select class="form-control" id="expenseCategorySelect" name="expenseCategorySelect"></select>
+            <select class="form-control" id="expenseCategorySelect" name="expenseCategorySelect">
+              <option value="" disabled selected>Select a category</option>
+            </select>
             <label for="expenseCategorySelect">Remove Expense Category</label>
          </div>
             <button type="submit" class="btn btn-secondary btn-lg custom-btn py-2">Remove Category</button>
         </form>
+        <form class="mx-2 p-2" id="setLimitForm">
+            <div class="form-floating my-2">
+                <select id="limitCategorySelect" name="category_id" class="form-control">
+                    <option value="" disabled selected>Select a category</option>
+                  </select>                  
+              <label for="limitCategorySelect">Set Limit Category</label>
+            </div>
+            <div class="form-floating my-2">
+              <input type="month" id="limitMonthYear" name="month_year" class="form-control" required>
+              <label for="limitMonthYear">Select Month and Year</label>
+            </div>
+            <div class="form-floating my-2">
+              <input type="number" step="0.01" id="categoryLimit" name="limit" class="form-control" placeholder="Enter limit" required>
+              <label for="categoryLimit">Set Limit</label>
+            </div>
+            <button type="button" class="btn btn-secondary btn-lg custom-btn py-2" id="setLimitButton">Set Limit</button>
+          </form>        
     </main>
   </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

@@ -164,6 +164,14 @@ public function getTotalExpensesForCategory($userId, $categoryId, $monthYear)
     $query->execute();
     $result = $query->fetch(PDO::FETCH_ASSOC);
     return $result ? $result['total'] : 0;
+} 
+
+public function getCategoryLimitAndSpentAmount($userId, $categoryId, $monthYear)
+{
+    $limit = $this->getCategoryLimit($userId, $categoryId, $monthYear);
+    $spent = $this->getTotalExpensesForCategory($userId, $categoryId, $monthYear);
+    return ["limit" => $limit, "spent" => $spent];
 }
+
 
 }

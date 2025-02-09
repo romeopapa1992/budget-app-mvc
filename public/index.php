@@ -43,6 +43,7 @@ $router->add('setCategoryLimit', ExpenseController::class, 'setCategoryLimit');
 $router->add('getCategoryLimit', ExpenseController::class, 'getCategoryLimit');
 $router->add('getCategoryLimitAndSpentAmount', ExpenseController::class, 'getCategoryLimitAndSpentAmount');
 $router->add('getCategorySpentAmount', ExpenseController::class, 'getCategorySpentAmount');
+$router->add('validateExpenseLimit', ExpenseController::class, 'validateExpenseLimit');
 
 $path = $_GET['path'] ?? '';
 

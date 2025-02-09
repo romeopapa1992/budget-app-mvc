@@ -11,7 +11,7 @@
 </head>
 
 <body class="d-flex h-100 text-center">
-  <div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
+  <div class="cover-container d-flex w-100 h-100 mx-auto flex-column">
     <nav class="navbar navbar-expand-lg navbar-light bg-none mb-auto">
       <div class="container-fluid">
         <a class="btn btn-lg btn-secondary custom-btn-nav" href="/balance">
@@ -48,7 +48,8 @@
         <div class="form-floating my-2">
           <input type="text" class="form-control" id="floatingAmount" placeholder="$$$" name="amount">
           <label for="floatingAmount">Amount in PLN</label>
-          <p class="error-text" id="floatingAmountError">Amount cannot be empty.</p>
+          
+          <p class="error-text" id="limitExceedError" style="display:none;"></p>
         </div>
         <div class="form-floating my-2">
           <input type="date" class="form-control" id="floatingDate" name="date">
@@ -81,15 +82,17 @@
           <button class="btn btn-secondary btn-lg custom-btn py-2" type="button" id="clear-expense-button">Clear</button> 
         </div>
       </form>
-      <div class="form-floating my-2">
-        <input type="text" class="form-control" id="categoryLimitInfo" value="Category required" disabled>
-        <label for="categoryLimitInfo">Limit Info</label>
-    </div>
-    <div class="form-floating my-2">
-        <input type="text" class="form-control" id="categorySpentAmount" value="Category required" disabled>
-        <label for="categorySpentAmount">Limit Value</label>
-    </div>    
     </main>
+    <div class="limit-info">
+      <div class="limit-box">
+        <p class="limit-label">Limit Info:</p>
+        <span id="categoryLimitInfo" class="limit-info-text">Category required</span>
+      </div>
+      <div class="limit-box">
+        <p class="limit-label">Limit Value:</p>
+        <span id="categorySpentAmount" class="limit-value-text">Category required</span>
+      </div>
+    </div>
   </div>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>

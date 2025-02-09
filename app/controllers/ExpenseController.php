@@ -194,4 +194,15 @@ public function getCategorySpentAmount()
     exit;
 }
 
+public function validateExpenseLimit($userId, $categoryId, $dateOfExpense, $amount) {
+    $monthYear = date('Y-m', strtotime($dateOfExpense));
+    $spent = $this->expenseModel->getTotalExpensesForCategory($userId, $categoryId, $monthYear);
+    $limit = $this->expenseModel->getCategoryLimit($userId, $categoryId, $monthYear);
+
+    if ($limit && ($spent + $amount) > $limit) {
+        return ["status" => "error", "message" => "Limit exceeded by " . ($spent + $amount - $limit) . " PLN"];
+    }
+    return ["status" => "success"];
+}
+
 }

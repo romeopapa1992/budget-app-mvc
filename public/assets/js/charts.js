@@ -3,9 +3,9 @@ let expenseChart;
 export function drawExpenseChart(expenseData) {
     $('#no-expenses-message').addClass('d-none');
 
-    if (expenseChart) {
+    if (expenseChart instanceof Chart) {
         expenseChart.destroy();
-    }
+    }    
 
     const ctx = document.getElementById('expenseChart').getContext('2d');
     const labels = expenseData.map(item => item.category);

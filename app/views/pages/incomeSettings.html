@@ -53,8 +53,11 @@
 
       <form class="mx-2 p-2" id="removeIncomeCategoryForm" action="/removeIncomeCategory" method="POST">
         <div class="form-floating my-2">
-          <select class="form-control" id="incomeCategorySelect" name="incomeCategorySelect"></select>
+          <select class="form-control" id="incomeCategorySelect" name="incomeCategorySelect">
+            <option value="" disabled selected>Select a category</option>
+          </select>
           <label for="incomeCategorySelect">Remove Income Category</label>
+          <p class="error-text">Select the category.</p>
         </div>
         <button type="submit" class="btn btn-secondary btn-lg custom-btn py-2">Remove Category</button>
       </form>

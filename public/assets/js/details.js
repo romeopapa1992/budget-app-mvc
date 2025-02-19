@@ -62,7 +62,9 @@ $('#view-button').click(function() {
                         $('#no-expenses-message').addClass('d-none');
                         drawExpenseChart(categoryData);
                     } else {
-                        if (expenseChart) expenseChart.destroy();
+                        if (expenseChart instanceof Chart) {
+                            expenseChart.destroy();
+                        }
                         $('#expenseChart').addClass('d-none');
                         $('#no-expenses-message').removeClass('d-none');
                     }

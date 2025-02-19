@@ -48,7 +48,6 @@
         <div class="form-floating my-2">
           <input type="text" class="form-control" id="floatingAmount" placeholder="$$$" name="amount">
           <label for="floatingAmount">Amount in PLN</label>
-          
           <p class="error-text" id="limitExceedError" style="display:none;"></p>
         </div>
         <div class="form-floating my-2">
@@ -60,8 +59,8 @@
           <select class="form-control" id="expenseCategorySelect" name="category">
             <option value="" disabled selected>Select a category</option>             
           </select>
-        <label for="category">Expense Category</label>
-        <p class="error-text" id="categoryError">Select the category.</p>
+          <label for="category">Expense Category</label>
+          <p class="error-text" id="floatingCategoryError">Select the category.</p>
         </div>
         <div class="form-floating my-2">
           <select class="form-select" id="floatingPaymentMethod" aria-label="Select Payment Method" name="payment_method">
@@ -86,15 +85,15 @@
     <div class="limit-info">
       <div class="limit-box">
         <p class="limit-label">Limit Info:</p>
-        <span id="categoryLimitInfo" class="limit-info-text">Category required</span>
+        <span id="categoryLimitInfo" class="limit-info-text">Category and data required</span>
       </div>
       <div class="limit-box">
         <p class="limit-label">Limit Value:</p>
-        <span id="categorySpentAmount" class="limit-value-text">Category required</span>
+        <span id="categorySpentAmount" class="limit-value-text">Category and data required</span>
       </div>
     </div>
   </div>
-
+  
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script type="module" src="/assets/js/script.js"></script>
 

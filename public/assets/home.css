@@ -12,6 +12,27 @@ main {
   border-radius: 0.75rem;
 }
 
+.start-page-main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.start-inner {
+  width: 90%;
+  padding: 60px; 
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #2c3e50, #4b6cb7);
+  transition: background 0.3s ease-in-out;
+  text-align: center;
+}
+
+.start-inner:hover {
+  background: linear-gradient(135deg, #4b6cb7, #2c3e50);
+}
+
 .custom-btn {
   align-items: center; 
   background-color: black;
@@ -37,6 +58,15 @@ main {
 width: 40%;
 }
 
+h1.cover-heading {
+  font-size: 3rem; 
+}
+
+p.lead {
+  font-size: 1.5rem; 
+}
+
+
 .navbar-toggler {
   background-color: rgba(169, 169, 169, 0.551);
 }
@@ -55,8 +85,8 @@ font-style: italic;
 font-weight: 500;
 }
 
-input.error {
-border: 2px solid hsl(0, 100%, 74%); 
+input.error, select.error {
+  border: 2px solid hsl(0, 100%, 74%);
 }
 
 #limitExceedError {
@@ -213,4 +243,4 @@ margin: 20px;
     margin: 1%; 
   }
 
-}
+} 

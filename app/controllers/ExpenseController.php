@@ -16,7 +16,6 @@ class ExpenseController
         $this->expenseModel = new Expense($this->db);
     }
 
-
     public function addExpense()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -50,7 +49,7 @@ class ExpenseController
         }
         require_once '../App/views/pages/expenses.html'; 
     }
-           
+
     public function addExpenseCategory()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -150,6 +149,9 @@ public function getCategoryLimitAndSpentAmount()
         return;
     }
 
+    $expenseModel = new Expense($this->db);
+    $limit = $expenseModel->getCategoryLimit($userId, $categoryDefaultId, $monthYear);
+
     $sql = 'SELECT id FROM expenses_category_assigned_to_users 
             WHERE user_id = :user_id 
             AND name = (SELECT name FROM expenses_category_default WHERE id = :category_default_id)';
@@ -160,20 +162,15 @@ public function getCategoryLimitAndSpentAmount()
     $query->execute();
     $assignedCategory = $query->fetch(PDO::FETCH_ASSOC);
 
-    if (!$assignedCategory) {
-        echo json_encode(['limit' => false, 'spent' => 0]);
-        return;
+    $spent = 0; 
+
+    if ($assignedCategory) {
+        $categoryAssignedId = $assignedCategory['id']; 
+        $spent = $expenseModel->getTotalExpensesForCategory($userId, $categoryAssignedId, $monthYear);
     }
 
-    $categoryAssignedId = $assignedCategory['id']; 
-
-    $expenseModel = new Expense($this->db);
-    
-    $limit = $expenseModel->getCategoryLimit($userId, $categoryDefaultId, $monthYear);
-    $spent = $expenseModel->getTotalExpensesForCategory($userId, $categoryAssignedId, $monthYear);
-
     echo json_encode([
-        'limit' => $limit !== null ? $limit : false, 
+        'limit' => ($limit === null || $limit === false) ? 0 : $limit,  
         'spent' => $spent !== null ? $spent : 0
     ]);
 }
@@ -199,9 +196,13 @@ public function validateExpenseLimit($userId, $categoryId, $dateOfExpense, $amou
     $spent = $this->expenseModel->getTotalExpensesForCategory($userId, $categoryId, $monthYear);
     $limit = $this->expenseModel->getCategoryLimit($userId, $categoryId, $monthYear);
 
-    if ($limit && ($spent + $amount) > $limit) {
-        return ["status" => "error", "message" => "Limit exceeded by " . ($spent + $amount - $limit) . " PLN"];
+        if ($limit !== null) {
+        $remaining = $limit - $spent;
+        if ($amount > $remaining) {
+            return ["status" => "error", "message" => "Limit exceeded by " . ($amount - $remaining) . " PLN"];
+        }
     }
+
     return ["status" => "success"];
 }
 

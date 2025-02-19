@@ -103,7 +103,7 @@ class Balance
                     ON incomes.income_category_assigned_to_user_id = incomes_category_assigned_to_users.id
                 WHERE incomes.user_id = :user_id 
                   AND incomes.date_of_income BETWEEN :start_date AND :end_date
-                ORDER BY incomes.date_of_income DESC';
+                ORDER BY incomes.date_of_income ASC';
         $query = $this->db->prepare($sql);
         $query->bindValue(':user_id', $this->userId, PDO::PARAM_INT);
         $query->bindValue(':start_date', $startDate, PDO::PARAM_STR);
@@ -129,7 +129,7 @@ class Balance
                     ON expenses.payment_method_assigned_to_user_id = payment_methods_assigned_to_users.id
                 WHERE expenses.user_id = :user_id 
                   AND expenses.date_of_expense BETWEEN :start_date AND :end_date
-                ORDER BY expenses.date_of_expense DESC';
+                ORDER BY expenses.date_of_expense ASC';
 
         $query = $this->db->prepare($sql);
         $query->bindValue(':user_id', $this->userId, PDO::PARAM_INT);

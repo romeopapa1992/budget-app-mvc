@@ -1,5 +1,5 @@
 body {
-  background-image: url("../resources/Budget-Planning.jpg"); 
+  background-image: url("../resources/Budget-Planning.png"); 
   background-size: cover; 
   background-position: center;
   color: whitesmoke;
@@ -7,8 +7,9 @@ body {
 
 .inner, 
 main {
-  background-image: url("../resources/hand.webp");
-  background-size: cover;
+  background: linear-gradient(135deg, #2c3e50, #1d5bec);
+  background-size: 400% 400%;
+  animation: gradient-animation 18s ease infinite;
   border-radius: 0.75rem;
 }
 
@@ -24,13 +25,22 @@ main {
   width: 90%;
   padding: 60px; 
   border-radius: 1rem;
-  background: linear-gradient(135deg, #2c3e50, #4b6cb7);
-  transition: background 0.3s ease-in-out;
+  background: linear-gradient(135deg, #2c3e50, #1d5bec);
+  background-size: 400% 400%;
+  animation: gradient-animation 18s ease infinite;
   text-align: center;
 }
 
-.start-inner:hover {
-  background: linear-gradient(135deg, #4b6cb7, #2c3e50);
+@keyframes gradient-animation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 .custom-btn {

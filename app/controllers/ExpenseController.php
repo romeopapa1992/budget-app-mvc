@@ -81,26 +81,31 @@ class ExpenseController
     }
 
     public function getExpenseCategories()
-{
-    $userId = $_SESSION['user_id'];
-    $categories = $this->expenseModel->getExpenseCategories($userId);
-    echo json_encode($categories);
-}
+    {
+        if (!isset($_SESSION['user_id'])) {
+        echo json_encode([]);
+        return;
+        }
+
+        $userId = $_SESSION['user_id'];
+        $categories = $this->expenseModel->getExpenseCategories($userId);
+        echo json_encode($categories);
+    }
 
     public function getCategoryLimit()
-{
-    $data = json_decode(file_get_contents("php://input"), true);
-    $userId = $_SESSION['user_id'];
-    $categoryId = $data['category_id'];
-    $monthYear = $data['month_year'];
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+        $userId = $_SESSION['user_id'];
+        $categoryId = $data['category_id'];
+        $monthYear = $data['month_year'];
 
-    $expenseModel = new Expense($this->db);
-    $limit = $this->expenseModel->getCategoryLimit($userId, $categoryId, $monthYear);
+        $expenseModel = new Expense($this->db);
+        $limit = $this->expenseModel->getCategoryLimit($userId, $categoryId, $monthYear);
 
-    echo json_encode(["status" => "success", "limit" => $limit]);
-}
+        echo json_encode(["status" => "success", "limit" => $limit]);
+    }
 
-public function setCategoryLimit()
+    public function setCategoryLimit()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             session_start();
@@ -125,7 +130,7 @@ public function setCategoryLimit()
 
             $success = $this->expenseModel->setCategoryLimit($userId, $categoryId, $monthYear, $limitAmount);
             if ($success) {
-                echo json_encode(["message" => "Limit set successfully"]);
+                echo json_encode(["message" => "Limit set successfully!"]);
             } else {
                 http_response_code(500);
                 echo json_encode(["error" => "Failed to set limit"]);
@@ -133,77 +138,79 @@ public function setCategoryLimit()
         }
     }
 
-public function getCategoryLimitAndSpentAmount()
-{
-    if (!isset($_SESSION['user_id'])) {
-        echo json_encode(['error' => 'Unauthorized']);
-        return;
-    }
+    public function getCategoryLimitAndSpentAmount()
+    {
+        if (!isset($_SESSION['user_id'])) {
+            echo json_encode(['error' => 'Unauthorized']);
+            return;
+        }
 
-    $userId = $_SESSION['user_id'];
-    $categoryDefaultId = $_GET['category_id'] ?? null; 
-    $monthYear = $_GET['month_year'] ?? null;
-
-    if (!$categoryDefaultId || !$monthYear) {
-        echo json_encode(['error' => 'Missing parameters']);
-        return;
-    }
-
-    $expenseModel = new Expense($this->db);
-    $limit = $expenseModel->getCategoryLimit($userId, $categoryDefaultId, $monthYear);
-
-    $sql = 'SELECT id FROM expenses_category_assigned_to_users 
-            WHERE user_id = :user_id 
-            AND name = (SELECT name FROM expenses_category_default WHERE id = :category_default_id)';
-    
-    $query = $this->db->prepare($sql);
-    $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
-    $query->bindValue(':category_default_id', $categoryDefaultId, PDO::PARAM_INT);
-    $query->execute();
-    $assignedCategory = $query->fetch(PDO::FETCH_ASSOC);
-
-    $spent = 0; 
-
-    if ($assignedCategory) {
-        $categoryAssignedId = $assignedCategory['id']; 
-        $spent = $expenseModel->getTotalExpensesForCategory($userId, $categoryAssignedId, $monthYear);
-    }
-
-    echo json_encode([
-        'limit' => ($limit === null || $limit === false) ? 0 : $limit,  
-        'spent' => $spent !== null ? $spent : 0
-    ]);
-}
-
-public function getCategorySpentAmount()
-{
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $userId = $_SESSION['user_id'];
-        $categoryId = trim($_POST['category_id']);
-        $monthYear = trim($_POST['month_year']);
+        $categoryDefaultId = $_GET['category_id'] ?? null; 
+        $monthYear = $_GET['month_year'] ?? null;
 
-        $spentAmount = $this->expenseModel->getTotalExpensesForCategory($userId, $categoryId, $monthYear);
+        if (!$categoryDefaultId || !$monthYear) {
+            echo json_encode(['error' => 'Missing parameters']);
+            return;
+        }
 
-        echo json_encode(['status' => 'success', 'spentAmount' => $spentAmount]);
+        $expenseModel = new Expense($this->db);
+        $limit = $expenseModel->getCategoryLimit($userId, $categoryDefaultId, $monthYear);
+        $spent = 0;
+
+        $sql = 'SELECT id FROM expenses_category_assigned_to_users 
+                WHERE user_id = :user_id 
+                AND name = (SELECT name FROM expenses_category_default WHERE id = :category_default_id)';
+
+        $query = $this->db->prepare($sql);
+        $query->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $query->bindValue(':category_default_id', $categoryDefaultId, PDO::PARAM_INT);
+        $query->execute();
+        $assignedCategory = $query->fetch(PDO::FETCH_ASSOC);
+
+        if ($assignedCategory) {
+            $categoryAssignedId = $assignedCategory['id']; 
+            $spent = $expenseModel->getTotalExpensesForCategory($userId, $categoryAssignedId, $monthYear);
+        }
+
+        echo json_encode([
+            'limit' => ($limit === null || $limit === false) ? null : $limit,
+            'spent' => $spent !== null ? $spent : 0,
+            'limit_not_set' => ($limit === null || $limit === false)
+        ]);
+    }
+
+
+    public function getCategorySpentAmount()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $userId = $_SESSION['user_id'];
+            $categoryId = trim($_POST['category_id']);
+            $monthYear = trim($_POST['month_year']);
+
+            $spentAmount = $this->expenseModel->getTotalExpensesForCategory($userId, $categoryId, $monthYear);
+
+            echo json_encode(['status' => 'success', 'spentAmount' => $spentAmount]);
+            exit;
+        }
+        echo json_encode(['status' => 'error', 'message' => 'Invalid request.']);
         exit;
     }
-    echo json_encode(['status' => 'error', 'message' => 'Invalid request.']);
-    exit;
-}
 
-public function validateExpenseLimit($userId, $categoryId, $dateOfExpense, $amount) {
-    $monthYear = date('Y-m', strtotime($dateOfExpense));
-    $spent = $this->expenseModel->getTotalExpensesForCategory($userId, $categoryId, $monthYear);
-    $limit = $this->expenseModel->getCategoryLimit($userId, $categoryId, $monthYear);
+    public function validateExpenseLimit($userId, $categoryId, $dateOfExpense, $amount) 
+    {
+        $monthYear = date('Y-m', strtotime($dateOfExpense));
+        $spent = $this->expenseModel->getTotalExpensesForCategory($userId, $categoryId, $monthYear);
+        $limit = $this->expenseModel->getCategoryLimit($userId, $categoryId, $monthYear);
 
-        if ($limit !== null) {
-        $remaining = $limit - $spent;
-        if ($amount > $remaining) {
-            return ["status" => "error", "message" => "Limit exceeded by " . ($amount - $remaining) . " PLN"];
+            if ($limit !== null) {
+            $remaining = $limit - $spent;
+            if ($amount > $remaining) {
+                return ["status" => "error", "message" => "Limit exceeded by " . ($amount - $remaining) . " PLN"];
+            }
         }
-    }
 
-    return ["status" => "success"];
-}
+        return ["status" => "success"];
+    }
 
 }

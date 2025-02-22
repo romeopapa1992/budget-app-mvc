@@ -14,6 +14,7 @@ $('#view-button').click(function() {
 
             const incomeDetails = $('#income-details tbody');
             incomeDetails.empty();
+            $('#no-incomes-message').addClass('d-none');
             if (data.incomes.length) {
                 data.incomes.forEach((income, index) => {
                     incomeDetails.append(`
@@ -27,11 +28,12 @@ $('#view-button').click(function() {
                     `);
                 });
             } else {
-                incomeDetails.append('<tr><td colspan="5">No incomes for the selected period.</td></tr>');
+                $('#no-incomes-message').removeClass('d-none');
             }
 
             const expenseDetails = $('#expense-details tbody');
             expenseDetails.empty();
+            $('#no-expenses-message').addClass('d-none');
             if (data.expenses.length) {
                 data.expenses.forEach((expense, index) => {
                     expenseDetails.append(`
@@ -46,7 +48,7 @@ $('#view-button').click(function() {
                     `);
                 });
             } else {
-                expenseDetails.append('<tr><td colspan="6">No expenses for the selected period.</td></tr>');
+                $('#no-expenses-message').removeClass('d-none');
             }
 
             $('#details-section').removeClass('d-none');
@@ -57,16 +59,16 @@ $('#view-button').click(function() {
                 data: { period, startDate, endDate },
                 success: function(categoryResponse) {
                     const categoryData = JSON.parse(categoryResponse);
+                    $('#no-expense-chart-message').addClass('d-none');
                     if (categoryData.length) {
                         $('#expenseChart').removeClass('d-none');
-                        $('#no-expenses-message').addClass('d-none');
                         drawExpenseChart(categoryData);
                     } else {
                         if (expenseChart instanceof Chart) {
                             expenseChart.destroy();
                         }
                         $('#expenseChart').addClass('d-none');
-                        $('#no-expenses-message').removeClass('d-none');
+                        $('#no-expense-chart-message').removeClass('d-none');
                     }
                 },
                 error: function() {

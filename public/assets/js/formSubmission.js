@@ -59,5 +59,3 @@ $("form").not("#addExpenseCategoryForm, #removeExpenseCategoryForm, #addIncomeCa
     event.preventDefault();
     validateAndSubmitForm($(this), $(this).attr('action').includes('signin'));
 });
-
-

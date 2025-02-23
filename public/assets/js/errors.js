@@ -24,6 +24,12 @@ export const handleErrors = (errors) => {
     });
 };
 
+function resetLimitInfo() {
+    $("#categoryLimitInfo").text("");
+    $("#categorySpentAmount").text("");
+    $("#limitExceedError").hide();
+}
+
 export const clearErrors = () => {
     $('.error-text').hide();
     $('input, select').removeClass('error');
@@ -41,14 +47,16 @@ export const hideError = (input, errorElement) => {
     errorElement.hide();
 };
 
+export const clearExpenseForm = () => {
+    $('#addExpenseForm')[0].reset(); 
+    clearErrors(); 
+    resetLimitInfo(); 
+};
+
+$('#clear-expense-button').click(clearExpenseForm);
 
 $('#clear-income-button').click(function() {
     $('#addIncomeForm')[0].reset(); 
-    clearErrors(); 
-});
-
-$('#clear-expense-button').click(function() {
-    $('#addExpenseForm')[0].reset(); 
     clearErrors(); 
 });
 
